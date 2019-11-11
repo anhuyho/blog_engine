@@ -71,5 +71,13 @@ namespace BlogEngine.Controllers
         {
             return View();
         }
+        public IActionResult Travel()
+        {
+            return View();
+        }
+        public IActionResult Photo()
+        {
+            return View();
+        }
     }
 }

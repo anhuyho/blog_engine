@@ -1,0 +1,27 @@
+﻿@model Post
+@{
+    ViewData["Title"] = "Default";
+}
+<style>
+    img{
+        width: 95%;
+    }
+    .photo-review{
+        max-height: 180px;
+        width: auto;
+    }
+    .content-review{
+        margin-top: 10px;
+    }
+    .content-review .title{
+        text-transform: uppercase
+    }
+</style>
+<div>
+    <a asp-controller="Home" asp-action="Post" asp-route-id="@Model.Id"><img src="~/content/blog/@Model.Image" class="photo-review" /></a>
+    
+</div>
+<div class="content-review">
+    <div class="title">@Model.Title</div>
+    <p class="body">@Model.Body</p>
+</div>

@@ -1,20 +1,33 @@
 ﻿@model IEnumerable<Post>
 
-@{ 
-
+@{
+    ViewData["Title"] = "Home";
 }
-<div>
-    <img src="~/content/static/Cover.jpg"/>
+<style>
+    .main-home{
+        margin-left:25%;
+        margin-right:25%;
+    }
+    .preview-post{
+        margin-top: 20px;
+    }
+    #cover{
+        margin-left:5px;
+        margin-right: 5px;
+    }
+</style>
+<div id="cover">
+    <img src="~/content/static/Cover.jpg" width="100%" />
 </div>
-<div>
-    <ul>
-        @foreach(var post in Model)
+<div class="main-home">
+        @foreach (var post in Model)
         {
-        <li>
-            <a asp-controller="Home" asp-action="Post" asp-route-id="@post.Id">
-                @post.Title
-            </a>
-        </li>
+    <div class="preview-post">
+        <div asp-controller="Home" asp-action="Post" asp-route-id="@post.Id">
+            @await Component.InvokeAsync("PostPreview", post)
+        </div>
+       
+    </div>
         }
-    </ul>
+   
 </div>
