@@ -1,4 +1,4 @@
-﻿namespace BlogEngine.ViewModel
+﻿namespace BlogEngine.DataTransferObject
 {
     public class LoginViewModel
     {

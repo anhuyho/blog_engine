@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace BlogEngine.ViewModel
+namespace BlogEngine.DataTransferObject
 {
     public class PostViewModel
     {

@@ -2,7 +2,7 @@
 using BlogEngine.Data.FileManager;
 using BlogEngine.Data.Repository;
 using BlogEngine.Models;
-using BlogEngine.ViewModel;
+using BlogEngine.DataTransferObject;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

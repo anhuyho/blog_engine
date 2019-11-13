@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using BlogEngine.ViewModel;
+using BlogEngine.DataTransferObject;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
