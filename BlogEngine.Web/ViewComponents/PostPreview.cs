@@ -1,12 +1,11 @@
-﻿using BlogEngine.Models;
+﻿using BlogEngine.DataTransferObject;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace BlogEngine.ViewComponents
 {
     public class PostPreview: ViewComponent
     {
-        public IViewComponentResult Invoke(Post post)
+        public IViewComponentResult Invoke(PostViewModel post)
         {
             return View(post);
         }

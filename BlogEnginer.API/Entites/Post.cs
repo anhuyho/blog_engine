@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace BlogEngine.Models
+namespace BlogEnginer.API.Entites
 {
     public abstract class BaseEntity
     {

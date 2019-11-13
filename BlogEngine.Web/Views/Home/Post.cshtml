@@ -1,10 +1,10 @@
-﻿@model Post
+﻿@model PostViewModel
 
 @{ 
 
 }
 <h2>@Model.Title</h2>
-@if (!string.IsNullOrEmpty(Model.Image))
+@if (!string.IsNullOrEmpty(Model.ImageName))
 {
     var image_path = $"/Image/{Model.Image}";
     <img src="@image_path" width="500px">

@@ -8,5 +8,6 @@ namespace BlogEngine.DataTransferObject
         public string Title { get; set; } = string.Empty;
         public string Body { get; set; } = string.Empty;
         public IFormFile Image { get; set; }
+        public string ImageName { get; set; } = string.Empty;
     }
 }

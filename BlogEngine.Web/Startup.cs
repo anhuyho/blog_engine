@@ -1,11 +1,5 @@
-using BlogEngine.Data;
-using BlogEngine.Data.FileManager;
-using BlogEngine.Data.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,28 +18,7 @@ namespace BlogEngine
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            var connectionString = _config["DefaultConnection"];
-           services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
-
-            services.AddIdentity<IdentityUser, IdentityRole>(
-                option =>
-                {
-                    option.Password.RequireDigit = false;
-                    option.Password.RequireNonAlphanumeric = false;
-                    option.Password.RequireUppercase = false;
-                    option.Password.RequiredLength = 6;
-                }
-                )
-                    .AddRoles<IdentityRole>()
-                    .AddEntityFrameworkStores<AppDbContext>();
-
-            services.ConfigureApplicationCookie(option =>
-            {
-                option.LoginPath = "/Auth/Login";
-            });
-            services.AddTransient<IRepository, Repository>();
-            services.AddTransient<IFileManager, FileManager>();
-
+            services.AddHttpClient();
             services.AddControllersWithViews();
         }
 

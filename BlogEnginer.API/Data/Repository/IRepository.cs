@@ -1,10 +1,9 @@
-﻿using BlogEngine.Models;
-using System;
+﻿using BlogEnginer.API.Entites;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BlogEngine.Data.Repository
+namespace BlogEnginer.API.Data.Repository
 {
     public interface IRepository
     {

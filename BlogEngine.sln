@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29503.13
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlogEngine", "BlogEngine.Web\BlogEngine.csproj", "{9A909C5F-A6DC-4D92-BDF3-A0ED09071EB0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlogEngine.Web", "BlogEngine.Web\BlogEngine.Web.csproj", "{9A909C5F-A6DC-4D92-BDF3-A0ED09071EB0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlogEnginer.API", "BlogEnginer.API\BlogEnginer.API.csproj", "{1076E234-D950-47AF-BD1E-E99B3F8DE26B}"
 EndProject
