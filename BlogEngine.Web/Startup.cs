@@ -1,3 +1,4 @@
+using BlogEngine.Web.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -19,7 +20,13 @@ namespace BlogEngine
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddHttpClient();
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddJsonOptions(o =>
+            {
+                o.JsonSerializerOptions.PropertyNamingPolicy = null;
+                o.JsonSerializerOptions.DictionaryKeyPolicy = null;
+            });
+            services.AddHttpContextAccessor();
+            services.AddTransient<IControllerHelpers, ControllerHelpers>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,7 +48,13 @@ namespace BlogEngine
             app.UseRouting();
 
             app.UseAuthorization();
-
+            app.Use(async (context, next) =>
+            {
+                //var body = context.Request.Body;
+                //var form = context.Request.Form;
+                await next.Invoke();
+            }
+                );
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

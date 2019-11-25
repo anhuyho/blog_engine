@@ -18,7 +18,9 @@
     }
 </style>
 <div>
-    <a asp-controller="Home" asp-action="Post" asp-route-id="@Model.Id"><img src="~/content/blog/@Model.Image" class="photo-review" /></a>
+    <a asp-controller="Home" asp-action="Post" asp-route-id="@Model.Id">
+        <img src="~/content/blog/@Model.ImageName" class="photo-review" />
+    </a>
     
 </div>
 <div class="content-review">

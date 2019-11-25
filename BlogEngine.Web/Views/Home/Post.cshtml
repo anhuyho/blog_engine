@@ -1,13 +1,15 @@
-﻿@model PostViewModel
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment _webHosting
+@model PostViewModel
 
-@{ 
+@{
+
 
 }
 <h2>@Model.Title</h2>
 @if (!string.IsNullOrEmpty(Model.ImageName))
 {
-    var image_path = $"/Image/{Model.Image}";
-    <img src="@image_path" width="500px">
+<img src="~/content/blog/@Model.ImageName" width="500px"/>
 }
 
 <p>@Model.Body</p>
