@@ -1,3 +1,4 @@
+using BlogEngine.Web.FileManager;
 using BlogEngine.Web.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,6 +28,7 @@ namespace BlogEngine
             });
             services.AddHttpContextAccessor();
             services.AddTransient<IControllerHelpers, ControllerHelpers>();
+            services.AddTransient<IFileManager, FileManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

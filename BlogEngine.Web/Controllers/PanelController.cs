@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using BlogEngine.DataTransferObject;
+using BlogEngine.Web.FileManager;
 using BlogEngine.Web.Helpers;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 //using Newtonsoft.Json;
@@ -14,17 +18,14 @@ namespace BlogEngine.Controllers
     public class PanelController : Controller
     {
         //private IRepository _repo;
-        //private IFileManager _fileManager;
+        private readonly IFileManager _fileManager;
 
-        //public PanelController(IRepository repo, IFileManager fileManager)
-        //{
-        //    _repo = repo;
-        //    _fileManager = fileManager;
-        //}
         private readonly IControllerHelpers _controllerHelpers = null;
-        public PanelController(IControllerHelpers controllerHelpers)
+        public PanelController(IControllerHelpers controllerHelpers, IFileManager fileManager)
         {
             _controllerHelpers = controllerHelpers;
+
+            _fileManager = fileManager;
         }
         public async Task<IActionResult> Index()
         {
@@ -73,12 +74,24 @@ namespace BlogEngine.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(PostViewModel vm)
         {
-            string content = JsonConvert.SerializeObject(vm);
-            var formData = vm.ToFormData();
-
-            var result = await _controllerHelpers.PostAsync("Post", formData);
+            var form = new MultipartFormDataContent();
+            HttpContent content = new StringContent("fileToUpload");
+            HttpContent dictionaryItems = vm.ToFormData();
+            form.Add(content, "file");
+            form.Add(dictionaryItems, "vm");
+            var stream = vm.Image.OpenReadStream();
+            content = new StreamContent(stream);
+            content.Headers.ContentDisposition = 
+                new ContentDispositionHeaderValue("form-data")
+            {
+                Name = "file",
+                FileName = vm.Image.FileName
+            };
+            form.Add(content);
+            var result = await _controllerHelpers.PostAsync("Post", form);
             if (result.IsSuccessStatusCode)
             {
+                await _fileManager.SaveImage(vm.Image);
                 return RedirectToAction("Index");
             }
             Console.WriteLine(result.RequestMessage);

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
+using BlogEngine.DataTransferObject;
 
 namespace BlogEngine.Web.Helpers
 {
@@ -56,8 +57,8 @@ namespace BlogEngine.Web.Helpers
 
         public static FormUrlEncodedContent ToFormData(this object obj)
         {
+            var model = (obj as PostViewModel);
             var formData = obj.ToKeyValue();
-
             return new FormUrlEncodedContent(formData);
         }
     }

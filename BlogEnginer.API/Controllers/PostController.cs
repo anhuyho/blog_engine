@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using BlogEngine.Data.FileManager;
 using BlogEngine.DataTransferObject;
 using BlogEnginer.API.Data.Repository;
@@ -16,9 +18,10 @@ namespace BlogEnginer.API.Controllers
         private IRepository _repo;
         private IFileManager _fileManager;
 
-        public PostController(IRepository repo)
+        public PostController(IRepository repo, IFileManager fileManager)
         {
             _repo = repo;
+            _fileManager = fileManager;
         }
 
         // GET: api/Post
@@ -47,7 +50,7 @@ namespace BlogEnginer.API.Controllers
             {
                 Body = post.Body,
                 Id = post.Id,
-                ImageName = post.Image,
+                //ImageName = post.Image,
                 Title = post.Title
             };
 
@@ -55,30 +58,42 @@ namespace BlogEnginer.API.Controllers
 
         // POST: api/Post
         [HttpPost]
-        public async Task<IActionResult> Post([FromForm(Name="Image")] IFormFile image)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> Post()
         {
-            //var post = new Entites.Post
-            //{
-            //    Title = vm.Title,
-            //    Body = vm.Body,
+            var request = HttpContext.Request;
+            var file = request.Form?.Files?["file"];
 
-            //};
-            //if (vm.Id > 0)
-            //{
-            //    post.Id = vm.Id;
-            //    await _repo.Update(post);
-            //}
-            //else
-            //{
-            //    await _repo.Add(post);
-            //}
+            var vals = request.Form?["vm"];
 
-            //if (await _repo.SaveChangesAsync())
-            //{
-            //    return Ok(vm);
-            //}
-            //return NotFound();
-            return Ok();
+            var vals2 = HttpUtility.ParseQueryString(vals);
+
+            //example values:
+            var ids = vals2?.GetValues("Id")?.FirstOrDefault();
+            var title = vals2?.GetValues("Title")?.FirstOrDefault();
+            var body = vals2?.GetValues("Body")?.FirstOrDefault();
+            var post = new Entites.Post
+            {
+                Title = title,
+                Body = body,
+                Image = await _fileManager.SaveImage(file)
+            };
+            int.TryParse(ids, out var id);
+            if (id > 0)
+            {
+                post.Id = id;
+                await _repo.Update(post);
+            }
+            else
+            {
+                await _repo.Add(post);
+            }
+
+            if (await _repo.SaveChangesAsync())
+            {
+                return Ok(post);
+            }
+            return NotFound();
         }
 
         // PUT: api/Post/5

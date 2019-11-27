@@ -40,7 +40,19 @@ namespace BlogEngine.Data.FileManager
                 {
                     await image.CopyToAsync(fileStream);
                 }
-                return fileName;
+                var accessor = new HttpContextAccessor();
+                var httpContext = accessor.HttpContext;
+                var hostValue = string.Empty;
+                if (httpContext.Request.IsHttps)
+                {
+                    hostValue = "https://" + httpContext.Request.Host;
+                }
+                else
+                {
+                    hostValue = "http://" + httpContext.Request.Host;
+                }
+                var p = Path.Combine(save_path, fileName).Replace("wwwroot", hostValue);
+                return p;
             }
             catch (Exception e)
             {
