@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 //using Microsoft.OpenApi.Models;
 namespace BlogEngine
@@ -29,7 +30,9 @@ namespace BlogEngine
         public void ConfigureServices(IServiceCollection services)
         {
             var connectionString = Configuration["OtherConnection"];
-            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
+
+            //services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
+            services.AddEntityFrameworkSqlite().AddDbContext<SQLiteDbContext>();
 
             services.AddIdentity<IdentityUser, IdentityRole>(
                 option =>
@@ -41,7 +44,7 @@ namespace BlogEngine
                 }
                 )
                     .AddRoles<IdentityRole>()
-                    .AddEntityFrameworkStores<AppDbContext>();
+                    .AddEntityFrameworkStores<IdentityDbContext>();
             services.AddTransient<IRepository, Repository>();
             services.AddTransient<IFileManager, FileManager>();
 
@@ -76,7 +79,7 @@ namespace BlogEngine
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            
+
 
             if (env.IsDevelopment())
             {

@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
 namespace BlogEnginer.API.Data.Repository
 {
     public interface IRepository
@@ -18,9 +17,9 @@ namespace BlogEnginer.API.Data.Repository
     }
     public class Repository : IRepository
     {
-        private AppDbContext _ctx;
+        private SQLiteDbContext _ctx;
 
-        public Repository(AppDbContext ctx)
+        public Repository(SQLiteDbContext ctx)
         {
             _ctx = ctx;
         }
@@ -35,7 +34,7 @@ namespace BlogEnginer.API.Data.Repository
             {
                 return _ctx.Posts.AsQueryable<Post>();
             });
-            
+
         }
 
         public async Task<Post> Get(int id)
