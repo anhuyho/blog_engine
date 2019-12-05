@@ -1,33 +1,37 @@
 ﻿@model IEnumerable<PostViewModel>
 
 @{
-    ViewData["Title"] = "Home";
+    ViewData["Title"] = "Index";
 }
-<style>
-    .main-home{
-        margin-left:25%;
-        margin-right:25%;
-    }
-    .preview-post{
-        margin-top: 20px;
-    }
-    #cover{
-        margin-left:5px;
-        margin-right: 5px;
-    }
-</style>
-<div id="cover">
-    <img src="~/content/static/Cover.jpg" width="100%" />
-</div>
-<div class="main-home">
-        @foreach (var post in Model)
-        {
-    <div class="preview-post">
-        <div asp-controller="Home" asp-action="Post" asp-route-id="@post.Id">
-            @await Component.InvokeAsync("PostPreview", post)
+
+<h1>Indevvvx</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<div class="row">
+    @foreach (var item in Model)
+    {
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    Post ID: @item.Id
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">@item.PostName</h5>
+                    <p class="card-text">
+                        @{
+                            var desc = item.PostDescription;
+                        }
+                        @desc.Substring(0, 100) ...
+                    </p>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">Read More</a>
+                </div>
+            </div>
         </div>
-       
-    </div>
-        }
-   
+
+
+    }
+
 </div>

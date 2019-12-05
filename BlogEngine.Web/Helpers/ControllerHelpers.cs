@@ -14,7 +14,7 @@ namespace BlogEngine.Web.Helpers
     public interface IControllerHelpers
     {
         Task<HttpResponseMessage> GetAsync(string requestUri);
-        Task<HttpResponseMessage> PostAsync(string requestUri, MultipartFormDataContent formData);
+        Task<HttpResponseMessage> PostAsync(string requestUri, FormUrlEncodedContent formData);
 
         Task<PostViewModel> GetAPost(int id);
     }
@@ -33,7 +33,7 @@ namespace BlogEngine.Web.Helpers
         {
             return _configuration["BaseUri"] + "";
         }
-        public async Task<HttpResponseMessage> PostAsync(string requestUri, MultipartFormDataContent formData)
+        public async Task<HttpResponseMessage> PostAsync(string requestUri, FormUrlEncodedContent formData)
         {
             var baseUri = GetBaseUri();
             var method = HttpMethod.Post;

@@ -1,111 +1,111 @@
 ﻿using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
-using BlogEngine.Data.FileManager;
 using BlogEngine.DataTransferObject;
+using BlogEnginer.API.Data;
 using BlogEnginer.API.Data.Repository;
-using Microsoft.AspNetCore.Http;
+using BlogEnginer.API.Entites;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlogEnginer.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PostController : ControllerBase
+    public class PostsController : ControllerBase
     {
-        private IRepository _repo;
-        private IFileManager _fileManager;
+        private readonly AppDbContext _context;
 
-        public PostController(IRepository repo, IFileManager fileManager)
+        public PostsController(AppDbContext context)
         {
-            _repo = repo;
-            _fileManager = fileManager;
+            _context = context;
         }
 
-        // GET: api/Post
+        // GET: api/Posts1
         [HttpGet]
-        public async Task<IEnumerable<PostViewModel>> Get()
+        public async Task<ActionResult<IEnumerable<Post>>> GetBlogPosts()
         {
-            var posts = await _repo.Get();
-            var result = posts.ToList().Select(x =>
-                new PostViewModel
-                {
-                    Id = x.Id,
-                    Body = x.Body,
-                    ImageName = x.Image,
-                    Title = x.Title
-                }
-            );
-            return result.AsQueryable();
+            return await _context.Posts.ToListAsync();
         }
 
-        // GET: api/Post/5
-        [HttpGet("{id}", Name = "Get")]
-        public async Task<PostViewModel> Get(int id)
+        // GET: api/Posts1/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Post>> GetPost(int id)
         {
-            var post = await _repo.Get(id);
-            return new PostViewModel
-            {
-                Body = post.Body,
-                Id = post.Id,
-                //ImageName = post.Image,
-                Title = post.Title
-            };
+            var post = await _context.Posts.FindAsync(id);
 
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            return post;
         }
 
-        // POST: api/Post
-        [HttpPost]
-        [Consumes("multipart/form-data")]
-        public async Task<IActionResult> Post()
-        {
-            var request = HttpContext.Request;
-            var file = request.Form?.Files?["file"];
-
-            var vals = request.Form?["vm"];
-
-            var vals2 = HttpUtility.ParseQueryString(vals);
-
-            //example values:
-            var ids = vals2?.GetValues("Id")?.FirstOrDefault();
-            var title = vals2?.GetValues("Title")?.FirstOrDefault();
-            var body = vals2?.GetValues("Body")?.FirstOrDefault();
-            var post = new Entites.Post
-            {
-                Title = title,
-                Body = body,
-                Image = await _fileManager.SaveImage(file)
-            };
-            int.TryParse(ids, out var id);
-            if (id > 0)
-            {
-                post.Id = id;
-                await _repo.Update(post);
-            }
-            else
-            {
-                await _repo.Add(post);
-            }
-
-            if (await _repo.SaveChangesAsync())
-            {
-                return Ok(post);
-            }
-            return NotFound();
-        }
-
-        // PUT: api/Post/5
+        // PUT: api/Posts1/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
+        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> PutPost(int id, Post post)
         {
+            if (id != post.Id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(post).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!PostExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        // POST: api/Posts1
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
+        // more details see https://aka.ms/RazorPagesCRUD.
+        [HttpPost]
+        public async Task<ActionResult<Post>> PostPost(Post post)
         {
+            _context.Posts.Add(post);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetPost", new { id = post.Id }, post);
         }
+
+        // DELETE: api/Posts1/5
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Post>> DeletePost(int id)
+        {
+            var post = await _context.Posts.FindAsync(id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            _context.Posts.Remove(post);
+            await _context.SaveChangesAsync();
+
+            return post;
+        }
+
+        private bool PostExists(int id)
+        {
+            return _context.Posts.Any(e => e.Id == id);
+        }
+
     }
 }

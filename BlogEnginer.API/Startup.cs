@@ -28,8 +28,14 @@ namespace BlogEngine
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var connectionString = Configuration["OtherConnection"];
-            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
+            var connectionString = Configuration["DefaultConnection"];
+            //services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
+            //services.AddEntityFrameworkSqlite()
+            //    .AddDbContext<AppDbContext>((serviceProvider, options) =>
+            //            options.UseSqlite("Data Source=blog.db")
+            //                   .UseInternalServiceProvider(serviceProvider)); ;
+
+            services.AddDbContext<AppDbContext>(options => options.UseSqlite("DataSource=blog.db"));
 
             services.AddIdentity<IdentityUser, IdentityRole>(
                 option =>
@@ -111,4 +117,5 @@ namespace BlogEngine
             });
         }
     }
+
 }

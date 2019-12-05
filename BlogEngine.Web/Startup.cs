@@ -25,7 +25,7 @@ namespace BlogEngine
             {
                 o.JsonSerializerOptions.PropertyNamingPolicy = null;
                 o.JsonSerializerOptions.DictionaryKeyPolicy = null;
-            });
+            }).AddRazorRuntimeCompilation();
             services.AddHttpContextAccessor();
             services.AddTransient<IControllerHelpers, ControllerHelpers>();
             services.AddTransient<IFileManager, FileManager>();
@@ -50,13 +50,13 @@ namespace BlogEngine
             app.UseRouting();
 
             app.UseAuthorization();
-            app.Use(async (context, next) =>
-            {
-                //var body = context.Request.Body;
-                //var form = context.Request.Form;
-                await next.Invoke();
-            }
-                );
+            //app.Use(async (context, next) =>
+            //{
+            //    //var body = context.Request.Body;
+            //    //var form = context.Request.Form;
+            //    await next.Invoke();
+            //}
+            //    );
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

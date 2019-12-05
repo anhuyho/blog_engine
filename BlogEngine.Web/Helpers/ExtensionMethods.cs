@@ -57,7 +57,6 @@ namespace BlogEngine.Web.Helpers
 
         public static FormUrlEncodedContent ToFormData(this object obj)
         {
-            var model = (obj as PostViewModel);
             var formData = obj.ToKeyValue();
             return new FormUrlEncodedContent(formData);
         }
