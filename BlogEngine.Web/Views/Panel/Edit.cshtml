@@ -1,0 +1,69 @@
+﻿@model PostViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+
+            <div class="form-group row">
+                <label asp-for="PostName"class="col-md-1 col-form-label">Title</label>
+                <div class="col-md-11">
+                    <input asp-for="PostName" class="form-control" required="">
+                    <span asp-validation-for="PostName" class="text-danger"></span>
+                </div>
+            </div>
+            
+            <div class="form-group row">
+                <label asp-for="PostDescription" class="col-md-1 col-form-label">Title</label>
+                <div class="col-md-11">
+                    <textarea asp-for="PostDescription" class="form-control" required=""></textarea>
+                    <span asp-validation-for="PostDescription" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <div class="float-right">
+                        <input type="submit" value="Save" class="btn btn-primary-custom" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-md-12">
+                    @*<label asp-for="Content" class="control-label"></label>*@
+                    <textarea asp-for="Content" id="summernote" class="form-control"></textarea>
+                    <span asp-validation-for="Content" class="text-danger"></span>
+                </div>
+            </div>
+            
+            <div class="form-group row">
+                <label asp-for="TimeStamp" class="col-md-2 col-form-label">Time Stamp</label>
+                <div class="col-md-5">
+                    <input asp-for="TimeStamp" class="form-control" required="">
+                    <span asp-validation-for="TimeStamp" class="text-danger"></span>
+                </div>
+            </div>
+
+</form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote-bs4.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote-bs4.js"></script>
+
+    <script>
+     $('#summernote').summernote({
+        placeholder: 'Post something ...',
+        tabsize: 2,
+        height: 1000
+      });
+    </script>
+}

@@ -18,10 +18,10 @@ namespace BlogEnginer.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel vm)
         {
-            var result = await _signInManager.PasswordSignInAsync(vm.UserName, vm.Password, false, false);
+            var result = await _signInManager.PasswordSignInAsync(vm.Email, vm.Password, false, false);
             if (!result.Succeeded)
             {
-                return BadRequest(new { message = "Username or password is incorrect" });
+                return BadRequest(new { message = "Email or password is incorrect" });
             }
             return Ok(result);
         }

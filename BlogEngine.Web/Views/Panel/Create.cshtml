@@ -1,0 +1,65 @@
+﻿@model PostViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+<style>
+    .container{
+        margin-top: 50px !important;
+    }
+</style>
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="form-group col-md-12">
+                    @*<label asp-for="PostName" class="control-label"></label>*@
+                    <input asp-for="PostName" class="form-control" placeholder="Title" />
+                    <span asp-validation-for="PostName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-12">
+
+                    <div class="float-right">
+                        <input type="submit" asp-action="Publish" asp-controller="Panel" value="Publish" class="btn btn-primary-custom mr-2" />
+                        <input type="submit" asp-action="Save" asp-controller="Panel" value="Save" class="btn btn-primary-custom mr-2" />
+                        <input type="submit" asp-action="Preview" asp-controller="Panel" value="Preview" class="btn btn-primary-custom mr-2" />
+                        <input type="submit" asp-action="Index" asp-controller="Home" value="Close" class="btn btn-primary-custom"/>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+            <input asp-for="PostDescription" class="form-control" placeholder="Description"/>
+            <span asp-validation-for="PostDescription" class="text-danger"></span>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-12">
+                    @*<label asp-for="Content" class="control-label"></label>*@
+                    <textarea asp-for="Content" id="summernote" class="form-control"></textarea>
+                    <span asp-validation-for="Content" class="text-danger"></span>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@*<div>
+    <a asp-action="Index">Back to List</a>
+</div>*@
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote-bs4.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote-bs4.js"></script>
+
+    <script>
+        $('#summernote').summernote({
+            placeholder: 'Post something ...',
+            tabsize: 2,
+            height: 500
+        });
+
+    </script>
+}
