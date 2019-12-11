@@ -1,21 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 using BlogEngine.DataTransferObject;
-using BlogEngine.Web.FileManager;
 using BlogEngine.Web.Helpers;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+
 //using Newtonsoft.Json;
 
 
-namespace BlogEngine.Controllers
+namespace BlogEngine.Web.Controllers
 {
     //[Authorize(Roles = "Admin")]
     public class PanelController : Controller
@@ -30,24 +25,22 @@ namespace BlogEngine.Controllers
             _httpClientFactory = httpClientFactory;
         }
 
-
-        // GET: Posts/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Posts/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Publish([Bind("Id,PostName,PostDescription,Content,TimeStamp")] PostViewModel post)
         {
             if (ModelState.IsValid)
             {
-                var baseUri = "https://localhost:1122";// GetBaseUri();
-                var method = HttpMethod.Post;
+                var baseUri = Contanst.ApiEndPoint;
+
                 var uri = $"{baseUri}/api/Posts";
                 //var request = new HttpRequestMessage(method, uri);
                 var content = new StringContent(JsonConvert.SerializeObject(post), System.Text.Encoding.UTF8, "application/json");
@@ -91,9 +84,6 @@ namespace BlogEngine.Controllers
             return View(post);
         }
 
-        // POST: Posts/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,PostName,PostDescription,Content,TimeStamp")] PostViewModel post)
@@ -107,7 +97,7 @@ namespace BlogEngine.Controllers
             {
                 try
                 {
-                    var baseUri = "https://localhost:1122";// GetBaseUri();
+                    var baseUri = Contanst.ApiEndPoint;
                     var method = HttpMethod.Post;
                     var uri = $"{baseUri}/api/Posts/" + id;
                     //var request = new HttpRequestMessage(method, uri);

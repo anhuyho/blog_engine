@@ -1,12 +1,14 @@
+using BlogEngine.DataTransferObject;
 using BlogEngine.Web.FileManager;
 using BlogEngine.Web.Helpers;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace BlogEngine
+namespace BlogEngine.Web
 {
     public class Startup
     {
@@ -16,10 +18,37 @@ namespace BlogEngine
         {
             _config = config;
         }
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthentication(config => {
+                    config.DefaultScheme = "Cookie";
+                    config.DefaultChallengeScheme = "oidc";
+                })
+                .AddCookie("Cookie")
+                .AddOpenIdConnect("oidc", config => {
+                    config.Authority = Contanst.IdentityServerEndPoint + "/";
+                    config.ClientId = "client_id_mvc";
+                    config.ClientSecret = "client_secret_mvc";
+                    config.SaveTokens = true;
+                    config.ResponseType = "code";
+                    config.SignedOutCallbackPath = "/Home/Index";
+                    config.CallbackPath = "/signin-oidc";
+
+
+                   
+
+                  
+                    config.GetClaimsFromUserInfoEndpoint = true;
+
+                    // configure scope
+                    config.Scope.Clear();
+                    config.Scope.Add("openid");
+                    config.Scope.Add("rc.scope");
+                    config.Scope.Add(Contanst.BlogAPI);
+                    config.Scope.Add("offline_access");
+
+                });
+
             services.AddHttpClient();
             services.AddControllersWithViews().AddJsonOptions(o =>
             {
@@ -28,10 +57,9 @@ namespace BlogEngine
             }).AddRazorRuntimeCompilation();
             services.AddHttpContextAccessor();
             services.AddTransient<IControllerHelpers, ControllerHelpers>();
-            services.AddTransient<IFileManager, FileManager>();
+            services.AddTransient<IFileManager, FileManager.FileManager>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -41,7 +69,6 @@ namespace BlogEngine
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
@@ -50,13 +77,7 @@ namespace BlogEngine
             app.UseRouting();
 
             app.UseAuthorization();
-            //app.Use(async (context, next) =>
-            //{
-            //    //var body = context.Request.Body;
-            //    //var form = context.Request.Form;
-            //    await next.Invoke();
-            //}
-            //    );
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

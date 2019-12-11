@@ -17,7 +17,8 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 //using Microsoft.OpenApi.Models;
 namespace BlogEngine
 {
-    public class Startup
+    
+    public partial class Startup
     {
         public Startup(IConfiguration configuration)
         {
@@ -26,61 +27,32 @@ namespace BlogEngine
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        
+        
         public void ConfigureServices(IServiceCollection services)
         {
-            var connectionString = Configuration["DefaultConnection"];
-            //services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
-            //services.AddEntityFrameworkSqlite()
-            //    .AddDbContext<AppDbContext>((serviceProvider, options) =>
-            //            options.UseSqlite("Data Source=blog.db")
-            //                   .UseInternalServiceProvider(serviceProvider)); ;
-
+            //AddSqlServer(services);
+        
             services.AddDbContext<AppDbContext>(options => options.UseSqlite("DataSource=blog.db"));
 
-            services.AddIdentity<IdentityUser, IdentityRole>(
-                option =>
-                {
-                    option.Password.RequireDigit = false;
-                    option.Password.RequireNonAlphanumeric = false;
-                    option.Password.RequireUppercase = false;
-                    option.Password.RequiredLength = 6;
-                }
-                )
-                    .AddRoles<IdentityRole>()
-                    .AddEntityFrameworkStores<IdentityDbContext>();
+            AddIdentity(services);
+
+
             services.AddTransient<IRepository, Repository>();
             services.AddTransient<IFileManager, FileManager>();
+
+            AddAuthentication(services);
+
+            //AddCors(services);
 
             services.AddControllers().AddJsonOptions(o =>
             {
                 o.JsonSerializerOptions.PropertyNamingPolicy = null;
                 o.JsonSerializerOptions.DictionaryKeyPolicy = null;
             });
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Version = "v1",
-                    Title = "ToDo API",
-                    Description = "A simple example ASP.NET Core Web API",
-                    TermsOfService = new Uri("https://example.com/terms"),
-                    Contact = new OpenApiContact
-                    {
-                        Name = "Shayne Boyer",
-                        Email = string.Empty,
-                        Url = new Uri("https://twitter.com/spboyer"),
-                    },
-                    License = new OpenApiLicense
-                    {
-                        Name = "Use under LICX",
-                        Url = new Uri("https://example.com/license"),
-                    }
-                });
-            });
+            AddSwagger(services);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
 
@@ -91,27 +63,21 @@ namespace BlogEngine
             }
 
             app.UseHttpsRedirection();
-            // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
 
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-            // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Blog API");
                 c.RoutePrefix = string.Empty;
             });
+            
             app.UseStaticFiles();
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
-            app.Use(async (context, next) =>
-                                   {
-                                       //var body = context.Request.Body;
-                                       //var form = context.Request.Form;
-                                       await next.Invoke();
-                                   }
-                );
+
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BlogEngine.DataTransferObject;
 using BlogEnginer.API.Data;
-using BlogEnginer.API.Data.Repository;
 using BlogEnginer.API.Entites;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -74,10 +73,9 @@ namespace BlogEnginer.API.Controllers
             return NoContent();
         }
 
-        // POST: api/Posts1
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
+      
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<Post>> PostPost(Post post)
         {
             _context.Posts.Add(post);
