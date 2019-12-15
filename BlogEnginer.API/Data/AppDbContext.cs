@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 namespace BlogEnginer.API.Data
 {
-    public interface IDbContext
-    {
-    }
-    public class AppDbContext : IdentityDbContext, IDbContext
+    //public interface IDbContext
+    //{
+    //}
+    public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options)
            : base(options)

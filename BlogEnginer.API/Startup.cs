@@ -13,6 +13,7 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using BlogEngine.DataTransferObject;
 
 //using Microsoft.OpenApi.Models;
 namespace BlogEngine
@@ -32,25 +33,68 @@ namespace BlogEngine
         public void ConfigureServices(IServiceCollection services)
         {
             //AddSqlServer(services);
-        
+
             services.AddDbContext<AppDbContext>(options => options.UseSqlite("DataSource=blog.db"));
 
-            AddIdentity(services);
+            //services.AddIdentity<IdentityUser, IdentityRole>(
+            //        option =>
+            //        {
+            //            option.Password.RequireDigit = false;
+            //            option.Password.RequireNonAlphanumeric = false;
+            //            option.Password.RequireUppercase = false;
+            //            option.Password.RequiredLength = 6;
+            //        }
+            //    )
+            //    .AddRoles<IdentityRole>()
+            //    .AddEntityFrameworkStores<IdentityDbContext>();
 
 
-            services.AddTransient<IRepository, Repository>();
-            services.AddTransient<IFileManager, FileManager>();
+            services.AddAuthentication("Bearer")
+                .AddJwtBearer("Bearer", config =>
+                {
+                    config.Authority = Contanst.IdentityServerEndPoint + "/";
 
-            AddAuthentication(services);
+                    config.Audience = "Blog.API";
+                });
 
-            //AddCors(services);
+            services.AddCors(confg =>
+                confg.AddPolicy("AllowAll",
+                    p => p.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()));
+
 
             services.AddControllers().AddJsonOptions(o =>
             {
                 o.JsonSerializerOptions.PropertyNamingPolicy = null;
                 o.JsonSerializerOptions.DictionaryKeyPolicy = null;
             });
-            AddSwagger(services);
+            //AddSwagger(services);
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "ToDo API",
+                    Description = "A simple example ASP.NET Core Web API",
+                    TermsOfService = new Uri("https://example.com/terms"),
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Shayne Boyer",
+                        Email = string.Empty,
+                        Url = new Uri("https://twitter.com/spboyer"),
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "Use under LICX",
+                        Url = new Uri("https://example.com/license"),
+                    }
+                });
+            });
+
+
+            services.AddTransient<IRepository, Repository>();
+            services.AddTransient<IFileManager, FileManager>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -72,6 +116,7 @@ namespace BlogEngine
             });
             
             app.UseStaticFiles();
+            app.UseCors("AllowAll");
             app.UseRouting();
 
             app.UseAuthentication();

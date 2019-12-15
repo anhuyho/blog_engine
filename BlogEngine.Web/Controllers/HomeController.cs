@@ -1,9 +1,11 @@
 ﻿using BlogEngine.DataTransferObject;
 using BlogEngine.Web.Helpers;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -46,7 +48,7 @@ namespace BlogEngine.Controllers
             {
 
             }
-            return View(posts);
+            return View(posts.OrderByDescending(c=>c.TimeStamp));
         }
 
         // GET: Posts/Details/5
@@ -60,7 +62,16 @@ namespace BlogEngine.Controllers
             var post = new PostViewModel();
             try
             {
-                var response = await _controllerHelpers.GetAsync("Posts/"+id);
+                var accessToken = await HttpContext.GetTokenAsync("access_token");
+                var idToken = await HttpContext.GetTokenAsync("id_token");
+                var refreshToken = await HttpContext.GetTokenAsync("refresh_token");
+
+                var claims = User.Claims.ToList();
+                var _accessToken = new JwtSecurityTokenHandler().ReadJwtToken(accessToken);
+                var _idToken = new JwtSecurityTokenHandler().ReadJwtToken(idToken);
+
+
+                var response = await _controllerHelpers.GetAsync("Posts/"+id, accessToken);
                 if (response.IsSuccessStatusCode)
                 {
                     using var responseStream = await response.Content.ReadAsStreamAsync();

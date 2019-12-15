@@ -1,4 +1,5 @@
 ﻿using BlogEngine.DataTransferObject;
+using IdentityModel.Client;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace BlogEngine.Web.Helpers
 {
     public interface IControllerHelpers
     {
-        Task<HttpResponseMessage> GetAsync(string requestUri);
+        Task<HttpResponseMessage> GetAsync(string requestUri, string accessToken = null);
         Task<HttpResponseMessage> PostAsync(string requestUri, FormUrlEncodedContent formData);
 
         Task<PostViewModel> GetAPost(int id);
@@ -51,7 +52,7 @@ namespace BlogEngine.Web.Helpers
             var response = await client.PostAsync(uri, formData);
             return response;
         }
-        public async Task<HttpResponseMessage> GetAsync(string requestUri)
+        public async Task<HttpResponseMessage> GetAsync(string requestUri, string accessToken = null)
         {
             var baseUri = GetBaseUri();
             var method = HttpMethod.Get;
@@ -60,7 +61,10 @@ namespace BlogEngine.Web.Helpers
 
             
             var client = _httpClientFactory.CreateClient();
-            
+            if (accessToken != null)
+            {
+                client.SetBearerToken(accessToken);
+            }
             var response = await client.SendAsync(request);
             return response;
         }

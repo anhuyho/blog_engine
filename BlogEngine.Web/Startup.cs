@@ -32,18 +32,20 @@ namespace BlogEngine.Web
                     config.SaveTokens = true;
                     config.ResponseType = "code";
                     config.SignedOutCallbackPath = "/Home/Index";
-                    config.CallbackPath = "/signin-oidc";
+                    //config.CallbackPath = "/signin-oidc";
 
 
-                   
+                    config.ClaimActions.DeleteClaim("amr");
+                    config.ClaimActions.DeleteClaim("s_hash");
+                    config.ClaimActions.MapUniqueJsonKey("RawCoding.Grandma", "rc.garndma");
 
-                  
+
                     config.GetClaimsFromUserInfoEndpoint = true;
 
                     // configure scope
                     config.Scope.Clear();
                     config.Scope.Add("openid");
-                    config.Scope.Add("rc.scope");
+                    //config.Scope.Add("rc.scope");
                     config.Scope.Add(Contanst.BlogAPI);
                     config.Scope.Add("offline_access");
 

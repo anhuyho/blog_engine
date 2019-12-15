@@ -1,8 +1,12 @@
 ﻿using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using BlogEngine.DataTransferObject;
 using BlogEngine.Web.Helpers;
+using IdentityModel.Client;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -13,6 +17,7 @@ using Newtonsoft.Json;
 namespace BlogEngine.Web.Controllers
 {
     //[Authorize(Roles = "Admin")]
+    [Authorize]
     public class PanelController : Controller
     {
 
@@ -34,9 +39,18 @@ namespace BlogEngine.Web.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize]
+        
         public async Task<IActionResult> Publish([Bind("Id,PostName,PostDescription,Content,TimeStamp")] PostViewModel post)
         {
+
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+            var idToken = await HttpContext.GetTokenAsync("id_token");
+            var refreshToken = await HttpContext.GetTokenAsync("refresh_token");
+
+            var claims = User.Claims.ToList();
+            var _accessToken = new JwtSecurityTokenHandler().ReadJwtToken(accessToken);
+            var _idToken = new JwtSecurityTokenHandler().ReadJwtToken(idToken);
+
             if (ModelState.IsValid)
             {
                 var baseUri = Contanst.ApiEndPoint;
@@ -46,6 +60,9 @@ namespace BlogEngine.Web.Controllers
                 var content = new StringContent(JsonConvert.SerializeObject(post), System.Text.Encoding.UTF8, "application/json");
 
                 var client = _httpClientFactory.CreateClient();
+                client.SetBearerToken(accessToken);
+
+
                 var response = await client.PostAsync(uri, content);
                 if (response.IsSuccessStatusCode)
                 {
