@@ -63,7 +63,7 @@ namespace BlogEngine.Web.Helpers
             var client = _httpClientFactory.CreateClient();
             if (accessToken != null)
             {
-                client.SetBearerToken(accessToken);
+                //client.SetBearerToken(accessToken);
             }
             var response = await client.SendAsync(request);
             return response;

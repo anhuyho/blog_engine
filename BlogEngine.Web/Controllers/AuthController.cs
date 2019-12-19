@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
 using BlogEngine.DataTransferObject;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,8 +29,11 @@ namespace BlogEngine.Controllers
         [HttpGet]
         public async Task<IActionResult> Logout()
         {
-            await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            //await _signInManager.SignOutAsync();
+            //return RedirectToAction("Index", "Home");
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            var identityServerUri = Contanst.IdentityServerEndPoint;
+            return Redirect(identityServerUri+"/logout");
         }
     }
 }

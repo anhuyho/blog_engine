@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
+    <UserSecretsId>ff47a869-649d-4781-bc6e-6341bd7bee68</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,15 +19,11 @@
     <PackageReference Include="System.Collections" Version="4.3.0" />
     <PackageReference Include="IdentityModel" Version="4.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="3.0.0" />
-
+    <PackageReference Include="Serilog.Extensions.Logging.File" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BlogEngine.DataTransferObject\BlogEngine.DataTransferObject.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Views\Home\" />
   </ItemGroup>
 
 </Project>

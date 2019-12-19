@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BlogEngine.DataTransferObject;
 using BlogEnginer.API.Data;
 using BlogEnginer.API.Entites;
 using Microsoft.AspNetCore.Authorization;
@@ -12,7 +13,7 @@ namespace BlogEnginer.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    
+
     public class PostsController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -30,7 +31,7 @@ namespace BlogEnginer.API.Controllers
             return await _context.Posts.ToListAsync();
         }
 
-        
+
         // GET: api/Posts/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Post>> Get(int id)
@@ -47,14 +48,23 @@ namespace BlogEnginer.API.Controllers
 
         [HttpPut("{id}")]
         [Authorize]
-        public async Task<IActionResult> Put(int id, Post post)
+        public async Task<IActionResult> Put(int id, PostViewModel post)
         {
             if (id != post.Id)
             {
                 return BadRequest();
             }
-
-            _context.Entry(post).State = EntityState.Modified;
+            
+            //var id = post.Id;
+            var p = new Post
+            {
+                Id = post.Id,
+                Content = post.Content,
+                PostDescription = post.PostDescription,
+                PostName = post.PostName,
+                TimeStamp = post.TimeStamp
+            };
+            _context.Entry(p).State = EntityState.Modified;
 
             try
             {
@@ -91,7 +101,7 @@ namespace BlogEnginer.API.Controllers
         // DELETE: api/Posts/5
         [HttpDelete("{id}")]
         [Authorize]
-        public async Task<ActionResult<Post>> DeletePost(int id)
+        public async Task<ActionResult<Post>> Delete(int id)
         {
             var post = await _context.Posts.FindAsync(id);
             if (post == null)

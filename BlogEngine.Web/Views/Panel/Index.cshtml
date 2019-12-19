@@ -1,0 +1,43 @@
+﻿
+@model IEnumerable<PostViewModel>
+
+@{
+    ViewData["Title"] = "Admin";
+}
+<style>
+
+
+    .main-home {
+        margin-left: 25%;
+        margin-right: 25%;
+    }
+
+    .preview-post {
+        margin-top: 20px;
+    }
+
+    #cover {
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+</style>
+<div id="cover">
+    <img src="~/content/static/Cover.jpg" width="100%" />
+</div>
+<div class="main-home">
+    
+    <div class="container">
+        @foreach (var item in Model)
+        {
+            
+        <div class="row">
+            <a asp-controller="Panel" asp-action="Edit" asp-route-id="@item.Id" target="_blank">   
+                @item.PostName
+            </a>
+        <a asp-controller="Panel" asp-action="Delete" asp-route-id="@item.Id"><span class="glyphicon glyphicon-remove"></span></a>
+        
+        </div>
+
+        }
+    </div>
+</div>

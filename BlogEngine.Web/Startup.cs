@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace BlogEngine.Web
 {
@@ -18,6 +19,7 @@ namespace BlogEngine.Web
         {
             _config = config;
         }
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAuthentication(config => {
@@ -62,8 +64,13 @@ namespace BlogEngine.Web
             services.AddTransient<IFileManager, FileManager.FileManager>();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
+            //loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+            //loggerFactory.AddDebug();
+            loggerFactory.AddFile("Logs/ts-{Date}.txt");
+
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -73,6 +80,7 @@ namespace BlogEngine.Web
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

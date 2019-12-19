@@ -2,14 +2,11 @@
 using BlogEngine.Web.Helpers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 //using Newtonsoft.Json;
 
@@ -62,16 +59,16 @@ namespace BlogEngine.Controllers
             var post = new PostViewModel();
             try
             {
-                var accessToken = await HttpContext.GetTokenAsync("access_token");
-                var idToken = await HttpContext.GetTokenAsync("id_token");
-                var refreshToken = await HttpContext.GetTokenAsync("refresh_token");
+                //var accessToken = await HttpContext.GetTokenAsync("access_token");
+                //var idToken = await HttpContext.GetTokenAsync("id_token");
+                //var refreshToken = await HttpContext.GetTokenAsync("refresh_token");
 
-                var claims = User.Claims.ToList();
-                var _accessToken = new JwtSecurityTokenHandler().ReadJwtToken(accessToken);
-                var _idToken = new JwtSecurityTokenHandler().ReadJwtToken(idToken);
+                //var claims = User.Claims.ToList();
+                //var _accessToken = new JwtSecurityTokenHandler().ReadJwtToken(accessToken);
+                //var _idToken = new JwtSecurityTokenHandler().ReadJwtToken(idToken);
 
 
-                var response = await _controllerHelpers.GetAsync("Posts/"+id, accessToken);
+                var response = await _controllerHelpers.GetAsync("Posts/"+id);
                 if (response.IsSuccessStatusCode)
                 {
                     using var responseStream = await response.Content.ReadAsStreamAsync();
@@ -86,7 +83,10 @@ namespace BlogEngine.Controllers
             return View(post);
         }
 
-        
+        public async Task<IActionResult> About()
+        {
+            return View();
+        }
         
     }
 }

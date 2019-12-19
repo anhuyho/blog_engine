@@ -3,8 +3,9 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Ho An Huy 123 | @ViewData["Title"]</title>
+    <title>Huy Blog | @ViewData["Title"]</title>
     <style>
+
 
         #header {
             display: flex;
@@ -16,6 +17,12 @@
                 margin-left: 5%;
             }
     </style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
@@ -28,26 +35,29 @@
         <div class="header-item">
             <a asp-controller="Home" asp-action="About">About</a>
         </div>
-        <div class="header-item">
+        @*<div class="header-item">
             <a asp-controller="Home" asp-action="Travel">Travel</a>
         </div>
         <div class="header-item">
             <a asp-controller="Home" asp-action="Photo">Photo</a>
-        </div>
-        <div class="header-item">
-            <a asp-controller="Panel" asp-action="Create">Create</a>
-        </div>
-        <div class="header-item">
-            <a asp-controller="Panel" asp-action="Index">Admin Panel</a>
-        </div>
+        </div>*@
+        @if (User.Identity.IsAuthenticated)
+        {
+            <div class="header-item">
+                <a asp-controller="Panel" asp-action="Create">Create</a>
+            </div>
+            <div class="header-item">
+                <a asp-controller="Panel" asp-action="Index">Admin Panel</a>
+            </div>
+        }
         <div class="header-item">
             @if (User.Identity.IsAuthenticated)
             {
-                <a asp-controller="Auth" asp-action="Logout">Logout</a>
+                <a asp-controller="Account" asp-action="Logout">Logout</a>
             }
             else
             {
-                <a asp-controller="Auth" asp-action="Login">Sign In</a>
+                <a asp-controller="Account" asp-action="Login">Sign In</a>
             }
         </div>
     </div>

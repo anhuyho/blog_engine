@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
@@ -11,12 +12,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-//using Newtonsoft.Json;
-
-
 namespace BlogEngine.Web.Controllers
 {
-    //[Authorize(Roles = "Admin")]
+ 
     [Authorize]
     public class PanelController : Controller
     {
@@ -30,7 +28,32 @@ namespace BlogEngine.Web.Controllers
             _httpClientFactory = httpClientFactory;
         }
 
-        [Authorize]
+
+        public async Task<IActionResult> Index()
+        {
+            var posts = new List<PostViewModel>();
+            try
+            {
+                var response = await _controllerHelpers.GetAsync("Posts");
+                if (response.IsSuccessStatusCode)
+                {
+                    using var responseStream = await response.Content.ReadAsStreamAsync();
+                    var p = await System.Text.Json.JsonSerializer.DeserializeAsync<IEnumerable<PostViewModel>>(responseStream);
+                    posts = p.ToList();
+                }
+                else
+                {
+                    posts = Array.Empty<PostViewModel>().ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return View(posts.OrderByDescending(c => c.TimeStamp));
+        }
+
+
         public IActionResult Create()
         {
             return View();
@@ -66,10 +89,16 @@ namespace BlogEngine.Web.Controllers
                 var response = await client.PostAsync(uri, content);
                 if (response.IsSuccessStatusCode)
                 {
+                    var data = await response.Content.ReadAsStreamAsync();
+
                     return RedirectToAction("Index","Home");
                 }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
             }
-            return View(post);
+            return RedirectToAction("Error", "Home"); ;
         }
 
         // GET: Posts/Edit/5
@@ -117,10 +146,21 @@ namespace BlogEngine.Web.Controllers
                     var baseUri = Contanst.ApiEndPoint;
                     var method = HttpMethod.Post;
                     var uri = $"{baseUri}/api/Posts/" + id;
-                    //var request = new HttpRequestMessage(method, uri);
+
                     var content = new StringContent(JsonConvert.SerializeObject(post), System.Text.Encoding.UTF8, "application/json");
 
                     var client = _httpClientFactory.CreateClient();
+
+                    var accessToken = await HttpContext.GetTokenAsync("access_token");
+                    var idToken = await HttpContext.GetTokenAsync("id_token");
+                    var refreshToken = await HttpContext.GetTokenAsync("refresh_token");
+
+                    var claims = User.Claims.ToList();
+                    var _accessToken = new JwtSecurityTokenHandler().ReadJwtToken(accessToken);
+                    var _idToken = new JwtSecurityTokenHandler().ReadJwtToken(idToken);
+
+                    client.SetBearerToken(accessToken);
+
                     var response = await client.PutAsync(uri, content);
                     if (response.IsSuccessStatusCode)
                     {
@@ -151,23 +191,24 @@ namespace BlogEngine.Web.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        //// GET: Posts/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // GET: Posts/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            var baseUri = Contanst.ApiEndPoint;
+            var uri = $"{baseUri}/api/Posts/" + id;
 
-        //    var post = await _context.BlogPosts
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (post == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var client = _httpClientFactory.CreateClient();
 
-        //    return View(post);
-        //}
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+            client.SetBearerToken(accessToken);
+
+            var response = await client.DeleteAsync(uri);
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index", "Panel");
+            }
+            return RedirectToAction("Index", "Panel");
+        }
 
         //// POST: Posts/Delete/5
         //[HttpPost, ActionName("Delete")]
