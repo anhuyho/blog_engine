@@ -1,8 +1,10 @@
-﻿using BlogEnginer.API.Entites;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
-namespace BlogEnginer.API.Data.Repository
+using BlogEngine.API.Entities;
+using BlogEnginer.API.Data;
+using Microsoft.EntityFrameworkCore;
+
+namespace BlogEngine.API.Data.Repository
 {
     public interface IRepository
     {
@@ -16,9 +18,9 @@ namespace BlogEnginer.API.Data.Repository
     }
     public class Repository : IRepository
     {
-        private SQLiteDbContext _ctx;
+        private AppDbContext _ctx;
 
-        public Repository(SQLiteDbContext ctx)
+        public Repository(AppDbContext ctx)
         {
             _ctx = ctx;
         }
@@ -29,10 +31,7 @@ namespace BlogEnginer.API.Data.Repository
 
         public async Task<IQueryable<Post>> Get()
         {
-            return await Task.Run(() =>
-            {
-                return _ctx.Posts.AsQueryable<Post>();
-            });
+            return await Task.Run(() => _ctx.Posts.AsQueryable<Post>());
 
         }
 

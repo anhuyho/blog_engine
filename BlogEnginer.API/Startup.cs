@@ -1,33 +1,30 @@
 using System;
+using BlogEngine.API.Data.Repository;
 using BlogEngine.Data.FileManager;
+using BlogEngine.DataTransferObject;
 using BlogEnginer.API.Data;
-using BlogEnginer.API.Data.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json.Serialization;
-using Swashbuckle.AspNetCore.Swagger;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using BlogEngine.DataTransferObject;
 
 //using Microsoft.OpenApi.Models;
-namespace BlogEngine
+namespace BlogEngine.API
 {
     
-    public partial class Startup
+    public class Startup
     {
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            _endpoint = new Endpoint(configuration);
         }
 
         public IConfiguration Configuration { get; }
-
+        private Endpoint _endpoint;
         
         
         public void ConfigureServices(IServiceCollection services)
@@ -52,9 +49,10 @@ namespace BlogEngine
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", config =>
                 {
-                    config.Authority = Contanst.IdentityServerEndPoint + "/";
+                    config.Authority = _endpoint.Id4 + "/";
 
                     config.Audience = "Blog.API";
+
                 });
 
             services.AddCors(confg =>

@@ -20,7 +20,20 @@ namespace BlogEngine.IdentityServer
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder
+
+                    .ConfigureAppConfiguration((builderContext, config) =>
+                    {
+                        if (builderContext.HostingEnvironment.IsDevelopment())
+                        {
+                            config.AddJsonFile("appsettings.Development.json", optional: false);
+                        }
+                        else
+                        {
+                            config.AddJsonFile("appsettings.json", optional: false);
+                        }
+                    })
+                    .UseStartup<Startup>();
                 });
     }
 }

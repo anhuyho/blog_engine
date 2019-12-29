@@ -3,6 +3,7 @@ using BlogEngine.DataTransferObject;
 using IdentityModel;
 using IdentityServer4;
 using IdentityServer4.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace BlogEngine.IdentityServer
 {
@@ -12,25 +13,39 @@ namespace BlogEngine.IdentityServer
             new List<IdentityResource>
             {
                 new IdentityResources.OpenId(),
-                //new IdentityResources.Profile(),
-                //new IdentityResource
-                //{
-                //    Name = "rc.scope",
-                //    UserClaims =
-                //    {
-                //        "rc.garndma"
-                //    }
-                //}
+                new IdentityResources.Profile(),
+                new IdentityResources.Email(),
+                new IdentityResource
+                {
+                    Name = "rc.scope",
+                    UserClaims =
+                    {
+                        "rc.garndma"
+                    }
+                }
             };
 
-        public static IEnumerable<ApiResource> GetApis() =>
-            new List<ApiResource> {
-                new ApiResource(Contanst.BlogAPI)
-            };
-
-        public static IEnumerable<Client> GetClients()
+        public static IEnumerable<ApiResource> GetApis()
         {
+            var apiOne = new ApiResource(Contanst.BlogAPI);
+            apiOne.UserClaims = new List<string>{ "Huy", "Boi", "Hai" };
+            return new List<ApiResource> {
+                apiOne
+            };
+        }
+        public static IEnumerable<Client> GetClients(IConfiguration configuration)
+        {
+            var endpoint = new Endpoint(configuration);
+            var mvcEndpoint = endpoint.Mvc;
             var clients = new List<Client>();
+            var scopes = new List<string>();
+            scopes.Add(Contanst.BlogAPI);
+            scopes.Add(IdentityServerConstants.StandardScopes.OpenId);
+            scopes.Add(IdentityServerConstants.StandardScopes.Profile);
+            scopes.Add("rc.scope");
+            scopes.Add(IdentityServerConstants.StandardScopes.Email);
+
+
             var mvcClient = new Client
             {
                 ClientId = "client_id_mvc",
@@ -38,17 +53,17 @@ namespace BlogEngine.IdentityServer
 
                 AllowedGrantTypes = GrantTypes.Code,
 
-                RedirectUris = { Contanst.WebEndPoint + "/signin-oidc" },
-                PostLogoutRedirectUris = { Contanst.WebEndPoint + "/Home/Index" },
+                RedirectUris = { mvcEndpoint + "/signin-oidc" },
+                PostLogoutRedirectUris = { mvcEndpoint + "/Home/Index" },
 
-                AllowedScopes = {
-                       Contanst.BlogAPI,
-                        IdentityServerConstants.StandardScopes.OpenId
-                    },
+                AllowedScopes = scopes,
 
                 AllowOfflineAccess = true,
                 RequireConsent = false,
+
+                AlwaysIncludeUserClaimsInIdToken = true,
             };
+
             clients.Add(mvcClient);
 
             var apiClient = new Client

@@ -10,6 +10,7 @@ using IdentityModel.Client;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
 namespace BlogEngine.Web.Controllers
@@ -21,11 +22,14 @@ namespace BlogEngine.Web.Controllers
 
         private readonly IControllerHelpers _controllerHelpers = null;
         private readonly IHttpClientFactory _httpClientFactory;
-
-        public PanelController(IControllerHelpers controllerHelpers, IHttpClientFactory httpClientFactory)
+        private readonly IConfiguration _configuration;
+        private readonly Endpoint _endpoint;
+        public PanelController(IControllerHelpers controllerHelpers, IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _controllerHelpers = controllerHelpers;
             _httpClientFactory = httpClientFactory;
+            _configuration = configuration;
+            _endpoint = new Endpoint(_configuration);
         }
 
 
@@ -76,7 +80,7 @@ namespace BlogEngine.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                var baseUri = Contanst.ApiEndPoint;
+                var baseUri = _endpoint.Api;
 
                 var uri = $"{baseUri}/api/Posts";
                 //var request = new HttpRequestMessage(method, uri);
@@ -143,8 +147,7 @@ namespace BlogEngine.Web.Controllers
             {
                 try
                 {
-                    var baseUri = Contanst.ApiEndPoint;
-                    var method = HttpMethod.Post;
+                    var baseUri = _endpoint.Api;
                     var uri = $"{baseUri}/api/Posts/" + id;
 
                     var content = new StringContent(JsonConvert.SerializeObject(post), System.Text.Encoding.UTF8, "application/json");
@@ -194,7 +197,7 @@ namespace BlogEngine.Web.Controllers
         // GET: Posts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            var baseUri = Contanst.ApiEndPoint;
+            var baseUri = _endpoint.Api;
             var uri = $"{baseUri}/api/Posts/" + id;
 
             var client = _httpClientFactory.CreateClient();

@@ -1,23 +1,24 @@
 ﻿@model PostViewModel
 
 @{
-    ViewData["Title"] = Model.PostName;
+    ViewData["Title"] = "Details";
 }
 <div class="row">
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <h1 class="card-title" style="font: normal normal 22px 'Times New Roman', Times, FreeSerif, serif;">@Model.PostName</h1>
-                <span class="card-text text-muted" style="        background: black;
-        color: white !important;
-        margin: inherit;
-        padding: 0.4em;
-        letter-spacing: 3px;
-        font-family: 'Times New Roman', Times, FreeSerif, serif;
-        font-size: 12px;
-        font-weight: bold;
-        text-transform: uppercase;
-    ">
+                <h1 class="card-title">@Model.PostName</h1>
+                <span class="card-text text-muted" style="
+                                      background: black;
+                                      color: white !important;
+                                      margin: inherit;
+                                      padding: 0.4em;
+                                      letter-spacing: 3px;
+                                      font-family: 'Times New Roman', Times, FreeSerif, serif;
+                                      font-size: 12px;
+                                      font-weight: bold;
+                                      text-transform: uppercase;
+                                  ">
                     @Model.TimeStamp.ToString("dddd, dd MMMM yyyy")
                 </span>
             </div>
@@ -38,48 +39,23 @@
         </div>
     </div>
 </div>
-<div>0 Comments</div>
-<div>
-    <div class="row">
-        <div class="col-md-1">
-            Anonymus
-        </div>
-        <div class="col-md-11">
-            <textarea id="summernote" class="form-control"></textarea>
-        </div>
-    </div>
-    </div>
-<div id="disqus_thread"></div>
-    @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote-bs4.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote-bs4.js"></script>
-
+    <div id="disqus_thread"></div>
     <script>
-        $('#summernote').summernote({
-            placeholder: 'comment something ...',
-            tabsize: 2,
-            height: 500
-        });
 
+        /**
+        *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+        *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+        
+        var disqus_config = function () {
+        this.page.url = "https://localhost:44368/Posts/Details/"+@Model.Id;  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = @Model.Id; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+        
+        (function () { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://myblog-xtzn9ksece.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
     </script>
-}
-@*<script>
-
-    /**
-    *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
-    *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
-        
-    var disqus_config = function () {
-    this.page.url = "https://localhost:44368/Posts/Details/"+@Model.Id;  // Replace PAGE_URL with your page's canonical URL variable
-    this.page.identifier = @Model.Id; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
-    };
-        
-    (function () { // DON'T EDIT BELOW THIS LINE
-        var d = document, s = d.createElement('script');
-        s.src = 'https://myblog-xtzn9ksece.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>*@
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>

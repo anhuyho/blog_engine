@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
+using BlogEngine.API.Entities;
 using BlogEngine.DataTransferObject;
 using BlogEnginer.API.Data;
-using BlogEnginer.API.Entites;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -26,9 +28,12 @@ namespace BlogEnginer.API.Controllers
         // GET: api/Posts
         [HttpGet]
         //[Authorize]
-        public async Task<ActionResult<IEnumerable<Post>>> Get()
+        [Route("{sitename?}")]
+        public async Task<ActionResult<IEnumerable<Post>>> Get(string? siteName)
         {
-            return await _context.Posts.ToListAsync();
+            return await _context.Posts.Where(p=>p.User.SiteName == siteName)
+                
+                .ToListAsync();
         }
 
 
@@ -90,8 +95,16 @@ namespace BlogEnginer.API.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Authorize]
-        public async Task<ActionResult<Post>> Post(Post post)
+        public async Task<ActionResult<PostViewModel>> Post(PostViewModel vm)
         {
+            var user = await _context.Users.FindAsync(vm.UserId);
+            var post = new Post
+            {
+                PostDescription = vm.PostDescription,
+                Content = vm.Content,
+                PostName = vm.PostName,
+                User = user
+            };
             _context.Posts.Add(post);
             await _context.SaveChangesAsync();
 

@@ -2,6 +2,7 @@
 using BlogEngine.Web.Helpers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -17,19 +18,30 @@ namespace BlogEngine.Controllers
     {
         private readonly IControllerHelpers _controllerHelpers = null;
         private readonly IHttpClientFactory _httpClientFactory;
-
-        public HomeController(IControllerHelpers controllerHelpers, IHttpClientFactory httpClientFactory)
+        private readonly Endpoint _endpoint;
+        public HomeController(IControllerHelpers controllerHelpers, IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _controllerHelpers = controllerHelpers;
             _httpClientFactory = httpClientFactory;
+            _endpoint = new Endpoint(configuration);
         }
         // GET: Posts
         public async Task<IActionResult> Index()
         {
+            var siteName = HttpContext.Request.RouteValues["sitename"];
             var posts = new List<PostViewModel>();
             try
             {
-                var response = await _controllerHelpers.GetAsync("Posts");
+                //var response = await _controllerHelpers.GetAsync("Posts");
+                var baseUri = _endpoint.Api;
+                var method = HttpMethod.Get;
+                var uri = $"{baseUri}/api/Posts/{siteName}";
+                var request = new HttpRequestMessage(method, uri);
+
+
+                var client = _httpClientFactory.CreateClient();
+                
+                var response = await client.SendAsync(request);
                 if (response.IsSuccessStatusCode)
                 {
                     using var responseStream = await response.Content.ReadAsStreamAsync();

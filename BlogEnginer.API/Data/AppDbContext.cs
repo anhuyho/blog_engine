@@ -1,7 +1,6 @@
-﻿using BlogEnginer.API.Entites;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
+using BlogEngine.API.Entities;
+
 namespace BlogEnginer.API.Data
 {
     //public interface IDbContext
@@ -14,17 +13,15 @@ namespace BlogEnginer.API.Data
         {
         }
         public DbSet<Post> Posts { get; set; }
-    }
-    public class SQLiteDbContext : IdentityDbContext
-    {
-        public SQLiteDbContext(DbContextOptions<SQLiteDbContext> options)
-           : base(options)
+        public DbSet<User> Users { get; set; }
+        protected override void OnModelCreating(ModelBuilder builder)
         {
-        }
-        public DbSet<Post> Posts { get; set; }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlite("Filename=MyDatabase.db");
+            builder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+            builder.Entity<User>()
+                .HasIndex(u => u.Username)
+                .IsUnique();
         }
     }
 }

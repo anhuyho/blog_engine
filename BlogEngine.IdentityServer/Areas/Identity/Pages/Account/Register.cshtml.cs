@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -98,6 +99,7 @@ namespace BlogEngine.IdentityServer.Areas.Identity.Pages.Account
                     else
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
+                        await _userManager.AddClaimAsync(user, new Claim("username", "huyho"));
                         return LocalRedirect(returnUrl);
                     }
                 }

@@ -14,21 +14,23 @@ namespace BlogEngine.Web
     public class Startup
     {
         private IConfiguration _config;
-
+        private Endpoint _endpoint;
         public Startup(IConfiguration config)
         {
             _config = config;
+            _endpoint = new Endpoint(_config);
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
+            var identityServerEndPoint = _endpoint.Id4;
             services.AddAuthentication(config => {
                     config.DefaultScheme = "Cookie";
                     config.DefaultChallengeScheme = "oidc";
                 })
                 .AddCookie("Cookie")
                 .AddOpenIdConnect("oidc", config => {
-                    config.Authority = Contanst.IdentityServerEndPoint + "/";
+                    config.Authority = identityServerEndPoint + "/";
                     config.ClientId = "client_id_mvc";
                     config.ClientSecret = "client_secret_mvc";
                     config.SaveTokens = true;
@@ -47,7 +49,9 @@ namespace BlogEngine.Web
                     // configure scope
                     config.Scope.Clear();
                     config.Scope.Add("openid");
-                    //config.Scope.Add("rc.scope");
+                    config.Scope.Add("profile");
+                    config.Scope.Add("rc.scope");
+                    config.Scope.Add("email");
                     config.Scope.Add(Contanst.BlogAPI);
                     config.Scope.Add("offline_access");
 
@@ -94,6 +98,10 @@ namespace BlogEngine.Web
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+                endpoints.MapControllerRoute(
+                    name: "site",
+                    pattern: "{sitename?}/{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

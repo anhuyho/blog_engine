@@ -1,17 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using BlogEngine.IdentityServer.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
 namespace BlogEngine.IdentityServer
 {
     public class Startup
@@ -32,7 +27,8 @@ namespace BlogEngine.IdentityServer
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite("DataSource=identityServer.db"));
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders(); ;
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders(); ;
 
             //services.AddIdentity<IdentityUser, IdentityRole>(config =>
             //    {
@@ -58,7 +54,21 @@ namespace BlogEngine.IdentityServer
                 
                 .AddInMemoryApiResources(IdentityServer.Configuration.GetApis())
                 .AddInMemoryIdentityResources(IdentityServer.Configuration.GetIdentityResources())
-                .AddInMemoryClients(IdentityServer.Configuration.GetClients())
+                .AddInMemoryClients(IdentityServer.Configuration.GetClients(Configuration))
+                //.AddTestUsers(new List<TestUser> { 
+                //    new TestUser
+                //    {
+                //        Claims =  new Claim[]{
+                //        new Claim(JwtClaimTypes.Name, "Alice Smith"),
+                //        new Claim(JwtClaimTypes.GivenName, "Alice"),
+                //        new Claim(JwtClaimTypes.FamilyName, "Smith"),
+                //        new Claim(JwtClaimTypes.Email, "AliceSmith@email.com"),
+                //        new Claim(JwtClaimTypes.EmailVerified, "true", ClaimValueTypes.Boolean),
+                //        new Claim(JwtClaimTypes.WebSite, "http://alice.com"),
+                //        new Claim(JwtClaimTypes.Address, @"{ 'street_address': 'One Hacker Way', 'locality': 'Heidelberg', 'postal_code': 69118, 'country': 'Germany' }", IdentityServer4.IdentityServerConstants.ClaimValueTypes.Json)
+                //    }
+                //    }
+                //})
                 .AddDeveloperSigningCredential();
 
             services.AddControllersWithViews();

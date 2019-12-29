@@ -8,92 +8,36 @@
 
 
     .main-home {
-        margin-left: 5%;
-        margin-right: 5%;
-        margin-top: 50px;
+        margin-left: 25%;
+        margin-right: 25%;
     }
 
     .preview-post {
         margin-top: 20px;
     }
 
+    #cover {
+        margin-left: 5px;
+        margin-right: 5px;
+    }
 </style>
-<div class="main-home">
-
-    @*<div class="container">
-        @foreach (var item in Model)
-        {
-
-            <div class="row">
-                <div class="col-md-8">
-                    <a asp-controller="Panel" asp-action="Edit" asp-route-id="@item.Id" target="_blank">
-                        @item.PostName
-                    </a>
-                </div>
-                <div class="col-md-4">
-                    <a asp-controller="Panel" asp-action="Delete" asp-route-id="@item.Id"><span class="glyphicon glyphicon-remove"></span></a>
-
-                </div>
-            </div>
-        }
-    </div>*@
-
-
-
-    <ul class="list-unstyled">
-        @foreach (var item in Model)
-        {
-            <li class="media">
-
-                <div class="media-body">
-                    <a asp-controller="Panel" asp-action="Edit" asp-route-id="@item.Id" target="_blank">
-                        <h5 class="mt-0 mb-1">@item.PostName</h5>
-                    </a>
-                    @item.PostDescription
-
-                    @*<button type="button" class="btn btn-outline-danger" asp-action="Delete" asp-controller="Panel" asp-route-id=@item.Id>Danger</button>*@
-                    @*<a class="btn btn-outline-danger" asp-controller="Panel" asp-action="Delete" asp-route-id="@item.Id" role="button"
-                       style="float:right">Delete</a>*@
-
-
-                    <a asp-controller="Panel" asp-action="Delete" asp-route-id="@item.Id">
-                        <span class="glyphicon glyphicon-remove" style="color:red; float:right"></span></a>
-                    @*<button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#ConfirmModal-@item.Id">Danger</button>
-
-         Modal
-        <div class="modal fade" id="ConfirmModal-@item.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-
-                    <div class="modal-body">
-                        Are you sure to delete this post?
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                        <button type="button" class="btn btn-primary agree-to-delete" data-id="@item.Id">Yes</button>
-                    </div>
-                </div>
-            </div>
-        </div>*@
-                    @*<a asp-controller="Panel" asp-action="Delete" asp-route-id="@item.Id"><span class="glyphicon glyphicon-remove"></span></a>*@
-
-                </div>
-            </li>
-        }
-    </ul>
+<div id="cover">
+    <img src="~/content/static/Cover.jpg" width="100%" />
 </div>
-@*<script>
-    $('.agree-to-delete').click(function () {
-        var id = $(this).data('id');
+<div class="main-home">
+    
+    <div class="container">
+        @foreach (var item in Model)
+        {
+            
+        <div class="row">
+            <a asp-controller="Panel" asp-action="Edit" asp-route-id="@item.Id" target="_blank">   
+                @item.PostName
+            </a>
+        <a asp-controller="Panel" asp-action="Delete" asp-route-id="@item.Id"><span class="glyphicon glyphicon-remove"></span></a>
+        
+        </div>
 
-
-        $.get('@Url.Action("Delete","Panel")', { id : id } , function (data) {
-
-            console.log(data);
-
-        }, function (err) {
-                console.log(err);
-        });
-
-    });
-</script>*@
+        }
+    </div>
+</div>

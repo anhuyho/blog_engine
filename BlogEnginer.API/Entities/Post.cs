@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace BlogEnginer.API.Entites
+namespace BlogEngine.API.Entities
 {
     public abstract class BaseEntity
     {
@@ -24,5 +25,14 @@ namespace BlogEnginer.API.Entites
         {
             TimeStamp = DateTime.Now;
         }
+        public User User { get; set; }
+    }
+    public class User: BaseEntity
+    {
+        public string Username { get; set; }
+        public string Email { get; set; }
+        public string IdentityId { get; set; }
+        public string SiteName { get; set; }
+        public List<Post> Posts { get; set; } 
     }
 }

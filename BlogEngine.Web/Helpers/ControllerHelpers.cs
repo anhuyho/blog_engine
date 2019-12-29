@@ -24,15 +24,17 @@ namespace BlogEngine.Web.Helpers
 
         private readonly IConfiguration _configuration = null;
         private readonly IHttpClientFactory _httpClientFactory = null;
-        
+        private Endpoint _endpoint;
+
         public ControllerHelpers(IConfiguration configuration, IHttpClientFactory httpClientFactory)
         {
             _configuration = configuration;
             _httpClientFactory = httpClientFactory;
+            _endpoint = new Endpoint(_configuration);
         }
         private string GetBaseUri()
         {
-            return _configuration["BaseUri"] + "";
+            return _endpoint.Api;
         }
         public async Task<HttpResponseMessage> PostAsync(string requestUri, FormUrlEncodedContent formData)
         {
