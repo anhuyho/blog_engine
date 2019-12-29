@@ -4,7 +4,7 @@
 @{
     ViewData["Title"] = "Home";
 }
-<style>
+@*<style>
 
     .main-home {
         margin-left: 25%;
@@ -22,7 +22,7 @@
 </style>
 <div id="cover">
     <img src="~/content/static/Cover.jpg" width="100%" />
-</div>
+</div>*@
 <div class="main-home">
 
     <div class="row">
@@ -33,7 +33,9 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <a  asp-action="Details" asp-controller="Home" asp-route-id="@item.Id"><h1 class="card-title">@item.PostName</h1></a>
+                            <a  asp-action="Details" asp-controller="Home" asp-route-id="@item.Id"><h1 class="card-title"
+                                                                                                       style="font: normal normal 22px 'Times New Roman', Times, FreeSerif, serif;"
+                                                                                                       >@item.PostName</h1></a>
                             <span class="card-text text-muted" style="
                                        background: black;
                                        color: white !important;
