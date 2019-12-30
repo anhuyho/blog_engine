@@ -7,41 +7,54 @@
     <style>
 
 
-        #header {
-            display: flex;
-            margin-left: 20%;
-            margin-right: 20%;
+        #cover-header{
+            background-color: #F2F2F2;
         }
+            #cover-header #header {
+                display: flex;
+                margin-left: 20%;
+                margin-right: 20%;
+                padding-top: 15px;
+                padding-bottom: 15px;
+            }
 
-            #header .header-item {
+            #cover-header #header .header-item {
                 margin-left: 5%;
             }
+
+        .main-home {
+            margin-left: 15%;
+            margin-right: 15%;
+        }
+
+        .preview-post {
+            margin-top: 20px;
+        }
+
+        #cover {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
     </style>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" />
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
-
-    <div id="header">
-        <div class="header-item">
-            <a asp-controller="Home" asp-action="Index">Home</a>
-        </div>
-        <div class="header-item">
-            <a asp-controller="Home" asp-action="About">About</a>
-        </div>
-        @*<div class="header-item">
-            <a asp-controller="Home" asp-action="Travel">Travel</a>
-        </div>
-        <div class="header-item">
-            <a asp-controller="Home" asp-action="Photo">Photo</a>
-        </div>*@
-        @if (User.Identity.IsAuthenticated)
+    <div id="cover-header">
+        <div id="header">
+            <div class="header-item">
+                <a asp-controller="Home" asp-action="Index">Home</a>
+            </div>
+            <div class="header-item">
+                <a asp-controller="Profile" asp-action="About">About</a>
+            </div>
+            @if (User.Identity.IsAuthenticated)
         {
             <div class="header-item">
                 <a asp-controller="Panel" asp-action="Create">Create</a>
@@ -50,8 +63,8 @@
                 <a asp-controller="Panel" asp-action="Index">Admin Panel</a>
             </div>
         }
-        <div class="header-item">
-            @if (User.Identity.IsAuthenticated)
+            <div class="header-item">
+                @if (User.Identity.IsAuthenticated)
             {
                 <a asp-controller="Account" asp-action="Logout">Logout</a>
             }
@@ -59,29 +72,15 @@
             {
                 <a asp-controller="Account" asp-action="Login">Sign In</a>
             }
+            </div>
         </div>
     </div>
+    <div id="cover">
+        <img src="~/content/static/Cover.jpg" width="100%" />
+    </div>
     <div class="container">
-        <style>
 
 
-            .main-home {
-                margin-left: 25%;
-                margin-right: 25%;
-            }
-
-            .preview-post {
-                margin-top: 20px;
-            }
-
-            #cover {
-                margin-left: 5px;
-                margin-right: 5px;
-            }
-        </style>
-        <div id="cover">
-            <img src="~/content/static/Cover.jpg" width="100%" />
-        </div>
         <main role="main" class="pb-3">
             @RenderBody()
         </main>

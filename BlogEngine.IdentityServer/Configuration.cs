@@ -3,6 +3,7 @@ using BlogEngine.DataTransferObject;
 using IdentityModel;
 using IdentityServer4;
 using IdentityServer4.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace BlogEngine.IdentityServer
 {
@@ -28,9 +29,10 @@ namespace BlogEngine.IdentityServer
                 new ApiResource(Contanst.BlogAPI)
             };
 
-        public static IEnumerable<Client> GetClients()
+        public static IEnumerable<Client> GetClients(IConfiguration configuration)
         {
             var clients = new List<Client>();
+            var endPoint = new Endpoint(configuration);
             var mvcClient = new Client
             {
                 ClientId = "client_id_mvc",
@@ -38,8 +40,8 @@ namespace BlogEngine.IdentityServer
 
                 AllowedGrantTypes = GrantTypes.Code,
 
-                RedirectUris = { Contanst.WebEndPoint + "/signin-oidc" },
-                PostLogoutRedirectUris = { Contanst.WebEndPoint + "/Home/Index" },
+                RedirectUris = { endPoint.Mvc + "/signin-oidc" },
+                PostLogoutRedirectUris = { endPoint.Mvc + "/Home/Index" },
 
                 AllowedScopes = {
                        Contanst.BlogAPI,

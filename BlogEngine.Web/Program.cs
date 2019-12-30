@@ -3,6 +3,7 @@ using BlogEngine.Web;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 
 namespace BlogEngine
 {
@@ -58,7 +59,14 @@ namespace BlogEngine
                         .UseKestrel()
                         .ConfigureAppConfiguration((builderContext, config) =>
                         {
-                            config.AddJsonFile("appsettings.json", optional: false);
+                            if (builderContext.HostingEnvironment.IsDevelopment())
+                            {
+                                config.AddJsonFile("appsettings.Development.json", optional: false);
+                            }
+                            else
+                            {
+                                config.AddJsonFile("appsettings.json", optional: false);
+                            }
                         })
                         .UseContentRoot(Directory.GetCurrentDirectory())
                         .UseIISIntegration()

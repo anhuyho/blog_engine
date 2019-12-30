@@ -1,0 +1,71 @@
+﻿@model BlogEngine.DataTransferObject.Profile
+
+@{
+    ViewData["Title"] = @Model.UserName;
+}
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <img src="~/content/images/about.jpg" width="50%" id="profileImage" />
+        <div class="form-group">
+            <input asp-for="Image" />
+        </div>
+    </div>
+    <div class="col-md-6">
+
+        <form asp-action="About" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="UserName" class="control-label"></label>
+                <input asp-for="UserName" class="form-control"/>
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">I'm ...</label>
+                <textarea asp-for="Content" class="form-control"  id="summernote"></textarea>
+                <span asp-validation-for="Content" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Facebook" class="control-label"></label>
+                <input asp-for="Facebook" class="form-control" />
+                <span asp-validation-for="Facebook" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Youtube" class="control-label"></label>
+                <input asp-for="Youtube" class="form-control" />
+                <span asp-validation-for="Youtube" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Twitter" class="control-label"></label>
+                <input asp-for="Twitter" class="form-control" />
+                <span asp-validation-for="Twitter" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LinkedIn" class="control-label"></label>
+                <input asp-for="LinkedIn" class="form-control" />
+                <span asp-validation-for="LinkedIn" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote-bs4.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote-bs4.js"></script>
+
+    <script>
+        $('#summernote').summernote({
+            placeholder: 'Post something ...',
+            tabsize: 2,
+            height: 500
+        });
+
+    </script>
+}

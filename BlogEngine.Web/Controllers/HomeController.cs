@@ -2,6 +2,7 @@
 using BlogEngine.Web.Helpers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -24,8 +25,9 @@ namespace BlogEngine.Controllers
             _httpClientFactory = httpClientFactory;
         }
         // GET: Posts
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pageNumber)
         {
+            var pageSize = 2;
             var posts = new List<PostViewModel>();
             try
             {
@@ -45,7 +47,9 @@ namespace BlogEngine.Controllers
             {
 
             }
-            return View(posts.OrderByDescending(c=>c.TimeStamp));
+            return View(PaginatedList<PostViewModel>.CreateAsync(posts, pageNumber ?? 1, pageSize));
+            //var model = posts.OrderByDescending(c => c.TimeStamp).Skip(0).Take(2);
+            //return View(model);
         }
 
         // GET: Posts/Details/5
@@ -85,8 +89,23 @@ namespace BlogEngine.Controllers
 
         public async Task<IActionResult> About()
         {
-            return View();
+            var profile = new Profile
+            {
+                Content = "A son, a hushband, a father and a software developer",
+                UserName = "Huy Ho",
+                Facebook = "#",
+                Youtube = "https://www.youtube.com/channel/UCvLAedWEOD_35UqPl7jV7pQ?view_as=subscriber",
+                LinkedIn = "https://www.linkedin.com/in/huy-ho/",
+                Twitter = "",
+                ImageUrl = "/content/images/about.jpg"
+            };
+            return View(profile);
         }
-        
+        [HttpPost]
+        public async Task<IActionResult> About(Profile profile)
+        {
+            return View(profile);
+        }
+
     }
 }

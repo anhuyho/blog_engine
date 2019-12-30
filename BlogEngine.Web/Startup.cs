@@ -14,10 +14,11 @@ namespace BlogEngine.Web
     public class Startup
     {
         private IConfiguration _config;
-
+        Endpoint _endpoint;
         public Startup(IConfiguration config)
         {
             _config = config;
+            _endpoint = new Endpoint(config);
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -28,7 +29,7 @@ namespace BlogEngine.Web
                 })
                 .AddCookie("Cookie")
                 .AddOpenIdConnect("oidc", config => {
-                    config.Authority = Contanst.IdentityServerEndPoint + "/";
+                    config.Authority = _endpoint.Id4 + "/";
                     config.ClientId = "client_id_mvc";
                     config.ClientSecret = "client_secret_mvc";
                     config.SaveTokens = true;

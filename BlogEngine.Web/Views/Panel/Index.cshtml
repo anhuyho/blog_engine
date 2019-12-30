@@ -49,8 +49,13 @@
                     <a asp-controller="Panel" asp-action="Edit" asp-route-id="@item.Id" target="_blank">
                         <h5 class="mt-0 mb-1">@item.PostName</h5>
                     </a>
-                    @item.PostDescription
-
+                    @if(item.PostDescription.Length > 200)
+                    {
+                        @item.PostDescription.Substring(0, 200); 
+                    }else{
+                        @item.PostDescription.Substring(0, item.PostDescription.Length - 1); 
+                    }
+                    ...
                     @*<button type="button" class="btn btn-outline-danger" asp-action="Delete" asp-controller="Panel" asp-route-id=@item.Id>Danger</button>*@
                     @*<a class="btn btn-outline-danger" asp-controller="Panel" asp-action="Delete" asp-route-id="@item.Id" role="button"
                        style="float:right">Delete</a>*@

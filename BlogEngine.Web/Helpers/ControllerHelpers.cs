@@ -1,12 +1,7 @@
 ﻿using BlogEngine.DataTransferObject;
-using IdentityModel.Client;
 using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -32,7 +27,8 @@ namespace BlogEngine.Web.Helpers
         }
         private string GetBaseUri()
         {
-            return _configuration["BaseUri"] + "";
+            var endPoint = new Endpoint(_configuration);
+            return endPoint.Api;
         }
         public async Task<HttpResponseMessage> PostAsync(string requestUri, FormUrlEncodedContent formData)
         {

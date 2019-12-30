@@ -1,0 +1,93 @@
+﻿@model BlogEngine.DataTransferObject.Profile
+
+@{
+    ViewData["Title"] = "About";
+}
+<style>
+    #cover {
+        display: none;
+    }
+
+    #profileImage {
+        margin-top: 20px;
+        height: 300px;
+        width: 300px;
+        border-radius: 300px;
+        margin-bottom: 5px;
+    }
+</style>
+@*<h1>@Model.UserName</h1>*@
+<hr />
+
+
+    <div class="row">
+        <div class="col-md-4">
+            <img src="~/content/images/about.jpg" width="50%" id="profileImage" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 offset-md-4">
+
+            <form asp-action="About" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <h1 class="control-label">@Model.UserName</h1>
+                </div>
+                <hr/>
+                <div class="form-group">
+                    <label class="control-label">@Html.Raw(Model.Content)</label>
+                </div>
+                <div class="form-group">
+                    @if (!string.IsNullOrEmpty(Model.Facebook))
+                    {
+                        <a href="@Model.Facebook" target="_blank"> 
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-facebook-f fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.Youtube))
+                    {
+                        <a href="@Model.Youtube" target="_blank">
+                            <span class="fa-stack fa-lg">
+                                <i class="fab fa-youtube fa-stack-2x fa-inverse" style="color:red"></i>
+                            </span>
+                        </a>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.Twitter))
+                    {
+                        <a href="@Model.Twitter" target="_blank">
+                            <span class="fa-stack fa-lg">
+                                <i class="fab fa-twitter fa-stack-2x fa-inverse" style="color:#1DA1F2"></i>
+                            </span>
+                        </a>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.LinkedIn))
+                    {
+                <a href="@Model.LinkedIn" target="_blank">
+                    <span class="fa-stack fa-lg">
+                        <i class="fab fa-linkedin fa-stack-2x fa-inverse" style="color:dodgerblue"></i>
+                    </span>
+                </a>
+                    }
+                </div>
+                
+                @if (User.Identity.IsAuthenticated)
+                {
+            <div class="form-group float-right">
+                <a class="btn btn-primary" asp-action="Edit">Edit</a>
+            </div>
+                }
+            </form>
+        </div>
+    </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+<script>
+     $('#Image').on("change", function() {
+        $("#image_form").submit();
+    });
+</script>

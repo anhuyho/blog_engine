@@ -58,7 +58,7 @@ namespace BlogEngine.IdentityServer
                 
                 .AddInMemoryApiResources(IdentityServer.Configuration.GetApis())
                 .AddInMemoryIdentityResources(IdentityServer.Configuration.GetIdentityResources())
-                .AddInMemoryClients(IdentityServer.Configuration.GetClients())
+                .AddInMemoryClients(IdentityServer.Configuration.GetClients(Configuration))
                 .AddDeveloperSigningCredential();
 
             services.AddControllersWithViews();

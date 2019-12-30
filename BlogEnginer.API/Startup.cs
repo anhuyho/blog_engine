@@ -24,8 +24,9 @@ namespace BlogEngine
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            _endpoint = new Endpoint(configuration);
         }
-
+        private Endpoint _endpoint = null;
         public IConfiguration Configuration { get; }
 
         
@@ -52,7 +53,8 @@ namespace BlogEngine
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", config =>
                 {
-                    config.Authority = Contanst.IdentityServerEndPoint + "/";
+                    
+                    config.Authority = _endpoint.Id4 + "/";
 
                     config.Audience = "Blog.API";
                 });
