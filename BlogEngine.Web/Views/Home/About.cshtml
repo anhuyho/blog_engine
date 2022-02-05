@@ -1,0 +1,102 @@
+﻿@model BlogEngine.DataTransferObject.Profile
+
+@{
+    ViewData["Title"] = "About";
+}
+    <style>
+        #cover {
+            display: none;
+        }
+
+        #profileImage {
+            margin-top: 20px;
+            height: 300px;
+            width: 300px;
+            border-radius: 300px;
+            margin-bottom: 5px;
+        }
+    </style>
+<h1>About</h1>
+<hr />
+<div class="row">
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="col-md-4">
+            <img src="~/content/images/about.jpg" width="50%" id="profileImage" />
+        </div>
+        <div class="col-md-4">
+
+            <form asp-action="About" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="UserName" class="control-label"></label>
+                    <input asp-for="UserName" class="form-control" />
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Content" class="control-label"></label>
+                    <input asp-for="Content" class="form-control" />
+                    <span asp-validation-for="Content" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Facebook" class="control-label"></label>
+                    <input asp-for="Facebook" class="form-control" />
+                    <span asp-validation-for="Facebook" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Youtube" class="control-label"></label>
+                    <input asp-for="Youtube" class="form-control" />
+                    <span asp-validation-for="Youtube" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Twitter" class="control-label"></label>
+                    <input asp-for="Twitter" class="form-control" />
+                    <span asp-validation-for="Twitter" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="LinkedIn" class="control-label"></label>
+                    <input asp-for="LinkedIn" class="form-control" />
+                    <span asp-validation-for="LinkedIn" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Image" class="control-label"></label>
+                    <input asp-for="Image" />
+                    @*<span asp-validation-for="Image" class="text-danger"></span>*@
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    }
+    else
+    {
+        <div class="col-md-4">
+            <img src="~/content/images/about.jpg" width="50%" id="profileImage" />
+
+            <h1>@Model.UserName </h1>
+            <p>@Model.Content </p>
+            @if (!string.IsNullOrEmpty(Model.Facebook))
+            {
+                <a href="@Model.Facebook" target="_blank"> <i class="fa fa-facebook" aria-hidden="true"> </i> </a>
+            }
+            @if (!string.IsNullOrEmpty(Model.Youtube))
+            {
+                <a href="@Model.Youtube" target="_blank"> <i class="fa fa-youtube"> </i> </a>
+            }
+            @if (!string.IsNullOrEmpty(Model.Twitter))
+            {
+                <a href="@Model.Twitter" target="_blank"> <i class="fa fa-twitter"> </i> </a>
+            }
+            @if (!string.IsNullOrEmpty(Model.LinkedIn))
+            {
+                <a href="@Model.LinkedIn" target="_blank"> <i class="fa fa-linkedin"> </i> </a>
+            }
+        </div>
+    }
+    </div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

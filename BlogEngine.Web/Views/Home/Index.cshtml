@@ -1,0 +1,91 @@
+﻿
+@model PaginatedList<PostViewModel>
+
+@{
+    ViewData["Title"] = "Home";
+}
+<style>
+    .post-name {
+        font: normal normal 22px 'Times New Roman', Times, FreeSerif, serif;
+    }
+    .time-stamp {
+        background: black;
+        color: white !important;
+        margin: inherit;
+        padding: 0.4em;
+        letter-spacing: 3px;
+        font-family: 'Times New Roman', Times, FreeSerif, serif;
+        font-size: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+</style>
+<div class="main-home">
+
+    <div class="row">
+        @foreach (var item in Model)
+        {
+
+            <div class="row mt-3">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <a asp-action="Details" asp-controller="Home" asp-route-id="@item.Id">
+                                <h1 class="card-title post-name">@item.PostName</h1>
+                            </a>
+                            <span class="card-text text-muted time-stamp">
+                                @item.TimeStamp.ToString("dddd, dd MMMM yyyy")
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">
+                                @Html.Raw(item.Content)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr><hr><hr><hr><hr>
+        }
+    </div>
+    @{
+        var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+        var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    }
+    <style>
+        #newerPost, #homePost, #olderPost{
+            width: 33%;
+        }
+        .home-footer{
+            margin-top: 15px;
+        }
+    </style>
+<div class="row home-footer">
+    <!-- Pager -->
+    <div id="newerPost">
+        <a class="btn btn-primary float-left @prevDisabled"
+           asp-action="Index"
+           asp-route-pageNumber="@(Model.PageIndex - 1)">← Newer Posts</a>
+    </div>
+    <div id="homePost">
+        <a class="btn btn-primary" asp-action="Index">Home</a>
+    </div>
+    <div  id="olderPost">
+        <a class="btn btn-primary float-right @nextDisabled"
+           asp-action="Index"
+           asp-route-pageNumber="@(Model.PageIndex + 1)">Older Posts →</a>
+    </div>
+</div>
+    @*<div class="row">
+        <a asp-action="Index"
+           asp-route-pageNumber="@(Model.PageIndex - 1)"
+           class="btn btn-primary @prevDisabled">
+            Previous
+        </a>
+        <a asp-action="Index"
+           asp-route-pageNumber="@(Model.PageIndex + 1)"
+           class="btn btn-primary @nextDisabled">
+            Next
+        </a>
+    </div>*@
+</div>
