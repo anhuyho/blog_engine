@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 
 namespace BlogEngine.DataTransferObject
 {
-    public class Profile
+    public class UserProfile
     {
         [Display(Name ="User Name")]
         public string UserName { get; set; }

@@ -1,32 +1,22 @@
-using System;
 using BlogEngine.Data.FileManager;
 using BlogEnginer.API.Data;
 using BlogEnginer.API.Data.Repository;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json.Serialization;
-using Swashbuckle.AspNetCore.Swagger;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using BlogEngine.DataTransferObject;
+using MyEndpoint = BlogEngine.DataTransferObject.MyEndpoint;
 
 //using Microsoft.OpenApi.Models;
 namespace BlogEngine
 {
-    
+
     public partial class Startup
     {
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            _endpoint = new Endpoint(configuration);
+            _endpoint = new DataTransferObject.MyEndpoint(configuration);
         }
-        private Endpoint _endpoint = null;
+        private MyEndpoint _endpoint = null;
         public IConfiguration Configuration { get; }
 
         
@@ -36,19 +26,6 @@ namespace BlogEngine
             //AddSqlServer(services);
 
             services.AddDbContext<AppDbContext>(options => options.UseSqlite("DataSource=blog.db"));
-
-            //services.AddIdentity<IdentityUser, IdentityRole>(
-            //        option =>
-            //        {
-            //            option.Password.RequireDigit = false;
-            //            option.Password.RequireNonAlphanumeric = false;
-            //            option.Password.RequireUppercase = false;
-            //            option.Password.RequiredLength = 6;
-            //        }
-            //    )
-            //    .AddRoles<IdentityRole>()
-            //    .AddEntityFrameworkStores<IdentityDbContext>();
-
 
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", config =>
@@ -94,7 +71,10 @@ namespace BlogEngine
                 });
             });
 
+            //Register AutoMapper
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+            // Register Dependency Injection
             services.AddTransient<IRepository, Repository>();
             services.AddTransient<IFileManager, FileManager>();
         }

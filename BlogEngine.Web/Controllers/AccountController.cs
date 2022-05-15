@@ -1,14 +1,11 @@
-﻿using BlogEngine.DataTransferObject;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using System.Threading.Tasks;
+using BlogEngine.DataTransferObject;
 
 namespace BlogEngine.Web.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : MyMVCControllerBase
     {
         IConfiguration _config;
         public AccountController(IConfiguration config)
@@ -18,7 +15,8 @@ namespace BlogEngine.Web.Controllers
         [Authorize]
         public IActionResult Login()
         {
-            if (HttpContext.User.Identity.IsAuthenticated)
+            var isAutheticated = HttpContext?.User?.Identity?.IsAuthenticated;
+            if (IsAuthentciated)
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -28,31 +26,12 @@ namespace BlogEngine.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Logout()
         {
-            var endPoint = new Endpoint(_config);
+            var endPoint = new MyEndpoint(_config);
             //await _signInManager.SignOutAsync();
             //return RedirectToAction("Index", "Home");
             await HttpContext.SignOutAsync("Cookie");
             var identityServerUri = endPoint.Id4;
             return RedirectToAction("Index", "Home");
         }
-
-
-
-        //[HttpPost]
-        //public IActionResult Login(LoginViewModel model)
-        //{
-        //    if (model.Email.ToLower() == "an.huy90@gmail.com" && model.Password == "123456") ;
-        //        //HttpContext.User.s
-        //    return RedirectToAction("Index", "Home");
-        //}
-        //public IActionResult SignUp()
-        //{
-        //    return View();
-        //}
-        //[HttpPost]
-        //public IActionResult SignUp(SignUpViewModel model)
-        //{
-        //    return RedirectToAction("Index", "Home");
-        //}
     }
 }

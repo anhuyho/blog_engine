@@ -8,7 +8,7 @@ namespace BlogEngine.Controllers
     {
         //private SignInManager<IdentityUser> _signInManager;
         //IConfiguration _config;
-        Profile profile = new Profile
+        UserProfile profile = new UserProfile
         {
             Content = @"<p>A son, a hushband, a father and a software developer. 
                             <br>
@@ -43,7 +43,7 @@ namespace BlogEngine.Controllers
             return View(profile);
         }
         [HttpPost]
-        public async Task<IActionResult> About(Profile vm)
+        public async Task<IActionResult> About(UserProfile vm)
         {
             profile = vm;
             return View(vm);

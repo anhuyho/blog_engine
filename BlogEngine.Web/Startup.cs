@@ -2,23 +2,17 @@ using BlogEngine.DataTransferObject;
 using BlogEngine.Web.FileManager;
 using BlogEngine.Web.Helpers;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace BlogEngine.Web
 {
     public class Startup
     {
         private IConfiguration _config;
-        Endpoint _endpoint;
+        MyEndpoint _endpoint;
         public Startup(IConfiguration config)
         {
             _config = config;
-            _endpoint = new Endpoint(config);
+            _endpoint = new MyEndpoint(config);
         }
 
         public void ConfigureServices(IServiceCollection services)

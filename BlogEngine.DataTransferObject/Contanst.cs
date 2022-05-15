@@ -9,10 +9,10 @@ namespace BlogEngine.DataTransferObject
         //public static string IdentityServerEndPoint = "https://localhost:3345";
         public static string BlogAPI = "Blog.API";
     }
-    public class Endpoint
+    public class MyEndpoint
     {
         private IConfiguration _configuration;
-        public Endpoint(IConfiguration configuration)
+        public MyEndpoint(IConfiguration configuration)
         {
             _configuration = configuration;
         }

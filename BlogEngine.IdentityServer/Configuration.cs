@@ -32,7 +32,7 @@ namespace BlogEngine.IdentityServer
         public static IEnumerable<Client> GetClients(IConfiguration configuration)
         {
             var clients = new List<Client>();
-            var endPoint = new Endpoint(configuration);
+            var endPoint = new MyEndpoint(configuration);
             var mvcClient = new Client
             {
                 ClientId = "client_id_mvc",

@@ -1,15 +1,6 @@
 ﻿using BlogEngine.DataTransferObject;
 using BlogEngine.Web.Helpers;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
-//using Newtonsoft.Json;
 
 
 namespace BlogEngine.Controllers
@@ -17,12 +8,12 @@ namespace BlogEngine.Controllers
     public class HomeController : Controller
     {
         private readonly IControllerHelpers _controllerHelpers = null;
-        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly ILogger<HomeController> _logger = null;
 
-        public HomeController(IControllerHelpers controllerHelpers, IHttpClientFactory httpClientFactory)
+        public HomeController(IControllerHelpers controllerHelpers, ILogger<HomeController> logger)
         {
             _controllerHelpers = controllerHelpers;
-            _httpClientFactory = httpClientFactory;
+            _logger = logger;
         }
         // GET: Posts
         public async Task<IActionResult> Index(int? pageNumber)
@@ -45,51 +36,41 @@ namespace BlogEngine.Controllers
             }
             catch (Exception ex)
             {
-
+                _logger.LogError(pageNumber.Value, ex, $"can not get page {pageNumber}");
             }
             return View(PaginatedList<PostViewModel>.CreateAsync(posts, pageNumber ?? 1, pageSize));
-            //var model = posts.OrderByDescending(c => c.TimeStamp).Skip(0).Take(2);
-            //return View(model);
         }
 
         // GET: Posts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            if (id is null)
             {
                 return NotFound();
             }
 
-            var post = new PostViewModel();
+            PostViewModel post;
             try
             {
-                //var accessToken = await HttpContext.GetTokenAsync("access_token");
-                //var idToken = await HttpContext.GetTokenAsync("id_token");
-                //var refreshToken = await HttpContext.GetTokenAsync("refresh_token");
-
-                //var claims = User.Claims.ToList();
-                //var _accessToken = new JwtSecurityTokenHandler().ReadJwtToken(accessToken);
-                //var _idToken = new JwtSecurityTokenHandler().ReadJwtToken(idToken);
-
-
                 var response = await _controllerHelpers.GetAsync("Posts/"+id);
                 if (response.IsSuccessStatusCode)
                 {
                     using var responseStream = await response.Content.ReadAsStreamAsync();
                     post = await System.Text.Json.JsonSerializer.DeserializeAsync<PostViewModel>(responseStream);
                 }
+                throw new Exception();
             }
             catch (Exception ex)
             {
+                _logger.LogError(id.Value, ex, $"can not get post with id {id.Value}");
                 post = new PostViewModel();
             }
-
             return View(post);
         }
 
         public async Task<IActionResult> About()
         {
-            var profile = new Profile
+            var profile = new UserProfile
             {
                 Content = "A son, a hushband, a father and a software developer",
                 UserName = "Huy Ho",
@@ -102,7 +83,7 @@ namespace BlogEngine.Controllers
             return View(profile);
         }
         [HttpPost]
-        public async Task<IActionResult> About(Profile profile)
+        public async Task<IActionResult> About(UserProfile profile)
         {
             return View(profile);
         }
