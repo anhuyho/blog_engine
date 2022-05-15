@@ -1,51 +1,56 @@
-﻿using AutoMapper;
+﻿using BlogEngine.API.MediatoR.CQRS.Commands;
+using BlogEngine.API.MediatoR.CQRS.Queries;
 using BlogEngine.DataTransferObject;
-using BlogEnginer.API.Data;
-using BlogEnginer.API.Entites;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BlogEnginer.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-
+    [Authorize]
     public class PostsController : ControllerBase
     {
-        private readonly AppDbContext _context = null;
-        private readonly ILogger<PostsController> _logger = null;
-        private readonly IMapper _mapper = null;
-        public PostsController(AppDbContext context, ILogger<PostsController> logger, IMapper mapper)
+        private readonly IMediator _mediator;
+        private readonly IGetAllPostsQuery _getAllPostsQuery;
+        private readonly IGetPostByIdQuery _getPostByIdQuery;
+        private readonly IUpdateAPostCommand _updateAPostCommand;
+        private readonly IPostAPostCommand _postAPostCommand;
+        private readonly IDeleteAPostCommand _deleteAPostCommand;
+
+        public PostsController(IMediator mediator, IGetAllPostsQuery getAllPostsQuery,
+                                IGetPostByIdQuery getPostByIdQuery, IUpdateAPostCommand updatePostCommand,
+                                IPostAPostCommand postAPostCommand, IDeleteAPostCommand deleteAPostCommand)
         {
-            _context = context;
-            _logger = logger;
-            _mapper = mapper;
+            _mediator = mediator;
+            _getAllPostsQuery = getAllPostsQuery;
+            _getPostByIdQuery = getPostByIdQuery;
+            _updateAPostCommand = updatePostCommand;
+            _postAPostCommand = postAPostCommand;
+            _deleteAPostCommand = deleteAPostCommand;
         }
+
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PostViewModel>>> Get()
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAllPosts()
         {
-            var posts = await _context.Posts.ToListAsync();
-            var vm =  _mapper.Map<IEnumerable<PostViewModel>>(posts);
-            if (vm is null)
-            {
-                return NotFound();
-            }
-            return Ok(vm);
+            var result = await _mediator.Send(_getAllPostsQuery);
+            if (result is null || result.Any()) return NotFound();
+            return Ok(result);
         }
+
         [HttpGet("{id}")]
-        public async Task<ActionResult<Post>> Get(int id)
+        [AllowAnonymous]
+        public async Task<IActionResult> Get(int id)
         {
-            var post = await _context.Posts.FindAsync(id);
-
-            if (post is null)
-                return NotFound();
-
-            return Ok(post);
+            _getPostByIdQuery.Id = id;
+            var result = await _mediator.Send(_getPostByIdQuery);
+            if (result is null) return NotFound();
+            return Ok(result);
         }
 
         [HttpPut("{id}")]
-        [Authorize]
         public async Task<IActionResult> Put(int id, PostViewModel postVM)
         {
             if (!ModelState.IsValid || id != postVM.Id)
@@ -53,63 +58,42 @@ namespace BlogEnginer.API.Controllers
                 return BadRequest();
             }
 
+            _updateAPostCommand.Id = id;
+            _updateAPostCommand.PostViewModel = postVM;
 
-            var post = _mapper.Map<Post>(postVM);
+            var result = await _mediator.Send(_updateAPostCommand);
 
-            _context.Entry(post).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!IsPostExisting(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return result ? NoContent() : NotFound();
         }
 
-      
+
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [Authorize]
-        public async Task<ActionResult<Post>> Post(Post post)
+        public async Task<IActionResult> Post(PostViewModel postVM)
         {
-            _context.Posts.Add(post);
-            await _context.SaveChangesAsync();
+            if (!ModelState.IsValid) return BadRequest();
 
-            return CreatedAtAction("GetPost", new { id = post.Id }, post);
+            _postAPostCommand.PostViewModel = postVM;
+
+            var result = _mediator.Send(_postAPostCommand);
+
+            if (result is null) return NotFound();
+
+            return CreatedAtAction("GetPost", new { id = result.Id }, result);
         }
 
         // DELETE: api/Posts/5
         [HttpDelete("{id}")]
         [Authorize]
-        public async Task<ActionResult<PostViewModel>> Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var post = await _context.Posts.FindAsync(id);
-
-            if (post is null) return NotFound();
-
-            _context.Posts.Remove(post);
-
-            await _context.SaveChangesAsync();
-
-            return _mapper.Map<PostViewModel>(post);
+            _deleteAPostCommand.DeleteId = id;
+            var result = await _mediator.Send(_deleteAPostCommand);
+            return result ? NoContent() : NotFound();
         }
 
-        private bool IsPostExisting(int id)
-        {
-            return _context.Posts.Any(e => e.Id == id);
-        }
+
 
     }
 }

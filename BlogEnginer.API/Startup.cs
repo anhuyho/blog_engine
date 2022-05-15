@@ -1,6 +1,9 @@
+using BlogEngine.API.MediatoR.CQRS.Commands;
+using BlogEngine.API.MediatoR.CQRS.Queries;
 using BlogEngine.Data.FileManager;
 using BlogEnginer.API.Data;
 using BlogEnginer.API.Data.Repository;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using MyEndpoint = BlogEngine.DataTransferObject.MyEndpoint;
@@ -73,11 +76,13 @@ namespace BlogEngine
 
             //Register AutoMapper
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            //Register MediatR
+            services.AddMediatR(typeof(Startup));
 
-            // Register Dependency Injection
-            services.AddTransient<IRepository, Repository>();
-            services.AddTransient<IFileManager, FileManager>();
+            RegisterDependencyInjection(services);
         }
+
+        
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -109,6 +114,17 @@ namespace BlogEngine
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private void RegisterDependencyInjection(IServiceCollection services)
+        {
+            services.AddTransient<IRepository, Repository>();
+            services.AddTransient<IFileManager, FileManager>();
+            services.AddTransient<IGetAllPostsQuery, GetAllPostsQuery>();
+            services.AddTransient<IGetPostByIdQuery, GetPostByIdQuery>();
+            services.AddTransient<IUpdateAPostCommand, UpdateAPostCommand>();
+            services.AddTransient<IPostAPostCommand, PostAPostCommand>();
+            services.AddTransient<IDeleteAPostCommand, DeleteAPostCommand>();
         }
     }
 
