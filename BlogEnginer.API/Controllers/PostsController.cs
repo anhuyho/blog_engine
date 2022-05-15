@@ -1,11 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using BlogEngine.DataTransferObject;
 using BlogEnginer.API.Data;
 using BlogEnginer.API.Entites;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,55 +13,50 @@ namespace BlogEnginer.API.Controllers
 
     public class PostsController : ControllerBase
     {
-        private readonly AppDbContext _context;
-
-        public PostsController(AppDbContext context)
+        private readonly AppDbContext _context = null;
+        private readonly ILogger<PostsController> _logger = null;
+        private readonly IMapper _mapper = null;
+        public PostsController(AppDbContext context, ILogger<PostsController> logger, IMapper mapper)
         {
             _context = context;
+            _logger = logger;
+            _mapper = mapper;
         }
-
-        // GET: api/Posts
         [HttpGet]
-        //[Authorize]
-        public async Task<ActionResult<IEnumerable<Post>>> Get()
+        public async Task<ActionResult<IEnumerable<PostViewModel>>> Get()
         {
-            return await _context.Posts.ToListAsync();
+            var posts = await _context.Posts.ToListAsync();
+            var vm =  _mapper.Map<IEnumerable<PostViewModel>>(posts);
+            if (vm is null)
+            {
+                return NotFound();
+            }
+            return Ok(vm);
         }
-
-
-        // GET: api/Posts/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Post>> Get(int id)
         {
             var post = await _context.Posts.FindAsync(id);
 
-            if (post == null)
-            {
+            if (post is null)
                 return NotFound();
-            }
 
-            return post;
+            return Ok(post);
         }
 
         [HttpPut("{id}")]
         [Authorize]
-        public async Task<IActionResult> Put(int id, PostViewModel post)
+        public async Task<IActionResult> Put(int id, PostViewModel postVM)
         {
-            if (id != post.Id)
+            if (!ModelState.IsValid || id != postVM.Id)
             {
                 return BadRequest();
             }
-            
-            //var id = post.Id;
-            var p = new Post
-            {
-                Id = post.Id,
-                Content = post.Content,
-                PostDescription = post.PostDescription,
-                PostName = post.PostName,
-                TimeStamp = post.TimeStamp
-            };
-            _context.Entry(p).State = EntityState.Modified;
+
+
+            var post = _mapper.Map<Post>(postVM);
+
+            _context.Entry(post).State = EntityState.Modified;
 
             try
             {
@@ -72,7 +64,7 @@ namespace BlogEnginer.API.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!PostExists(id))
+                if (!IsPostExisting(id))
                 {
                     return NotFound();
                 }
@@ -101,21 +93,20 @@ namespace BlogEnginer.API.Controllers
         // DELETE: api/Posts/5
         [HttpDelete("{id}")]
         [Authorize]
-        public async Task<ActionResult<Post>> Delete(int id)
+        public async Task<ActionResult<PostViewModel>> Delete(int id)
         {
             var post = await _context.Posts.FindAsync(id);
-            if (post == null)
-            {
-                return NotFound();
-            }
+
+            if (post is null) return NotFound();
 
             _context.Posts.Remove(post);
+
             await _context.SaveChangesAsync();
 
-            return post;
+            return _mapper.Map<PostViewModel>(post);
         }
 
-        private bool PostExists(int id)
+        private bool IsPostExisting(int id)
         {
             return _context.Posts.Any(e => e.Id == id);
         }

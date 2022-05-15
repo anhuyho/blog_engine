@@ -1,9 +1,5 @@
 ﻿using BlogEngine.DataTransferObject;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Net.Http;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace BlogEngine.Web.Helpers
 {
@@ -27,7 +23,7 @@ namespace BlogEngine.Web.Helpers
         }
         private string GetBaseUri()
         {
-            var endPoint = new Endpoint(_configuration);
+            var endPoint = new MyEndpoint(_configuration);
             return endPoint.Api;
         }
         public async Task<HttpResponseMessage> PostAsync(string requestUri, FormUrlEncodedContent formData)

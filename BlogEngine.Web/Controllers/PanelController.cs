@@ -1,35 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
+﻿using System.IdentityModel.Tokens.Jwt;
 using BlogEngine.DataTransferObject;
 using BlogEngine.Web.Helpers;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
 namespace BlogEngine.Web.Controllers
 {
- 
+
     [Authorize]
     public class PanelController : Controller
     {
 
         private readonly IControllerHelpers _controllerHelpers = null;
         private readonly IHttpClientFactory _httpClientFactory;
-        Endpoint _endpoint = null;
+        MyEndpoint _endpoint = null;
         public PanelController(IControllerHelpers controllerHelpers, 
             IHttpClientFactory httpClientFactory,
             IConfiguration configuration)
         {
             _controllerHelpers = controllerHelpers;
             _httpClientFactory = httpClientFactory;
-            _endpoint = new Endpoint(configuration);
+            _endpoint = new MyEndpoint(configuration);
         }
 
 
